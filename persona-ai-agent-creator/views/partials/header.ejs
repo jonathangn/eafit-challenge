@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="<%= currentLang %>">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Persona AI Agent Creator</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .dark body { background-color: #1a1a1a; color: #e5e5e5; }
+    </style>
+    <link rel="stylesheet" href="/styles.css" />
+    <script>
+      if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+      function toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <a href="/" class="logo">
+          <span class="logo-icon">✨</span>
+          <span>Persona AI Agent Creator</span>
+        </a>
+        
+        <nav style="display: flex; align-items: center; gap: 0.25rem;">
+          <% if (currentUser) { %>
+            <a href="/bots" class="nav-link">🤖 My Agents</a>
+            <form action="/logout" method="post" style="display:inline;">
+              <button type="submit" class="nav-link" style="border:none;background:none;cursor:pointer;">🚪 Logout</button>
+            </form>
+          <% } else { %>
+            <a href="/login" class="nav-link">🔐 Login</a>
+            <a href="/register" class="nav-link">📝 Register</a>
+          <% } %>
+
+          <%# Language toggle %>
+          <div style="display:flex; align-items:center; margin-left:0.5rem; border: 1px solid var(--border-color); border-radius: 9999px; overflow:hidden; font-size:0.8rem; font-weight:600;">
+            <a href="/set-lang/en"
+               style="padding: 0.3rem 0.6rem; text-decoration:none; transition: background 0.2s;
+                      background: <%= currentLang === 'en' ? 'var(--primary)' : 'transparent' %>;
+                      color: <%= currentLang === 'en' ? '#fff' : 'var(--text-muted)' %>;">
+              EN
+            </a>
+            <a href="/set-lang/es"
+               style="padding: 0.3rem 0.6rem; text-decoration:none; transition: background 0.2s;
+                      background: <%= currentLang === 'es' ? 'var(--primary)' : 'transparent' %>;
+                      color: <%= currentLang === 'es' ? '#fff' : 'var(--text-muted)' %>;">
+              ES
+            </a>
+          </div>
+
+          <button onclick="toggleTheme()" class="theme-toggle" style="margin-left: 0.25rem;" title="Toggle Dark Mode">
+            <span class="dark:hidden">🌙</span>
+            <span class="hidden dark:inline">☀️</span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: persona-creator
+  labels:
+    app: persona-creator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: persona-creator
+  template:
+    metadata:
+      labels:
+        app: persona-creator
+    spec:
+      containers:
+      - name: persona-creator
+        image: persona-creator-image
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DATABASE_PATH
+          value: "/app/data/database.sqlite"
+        - name: UPLOAD_DIR
+          value: "/app/uploads"
+        - name: GENERATED_DIR
+          value: "/app/generated"
+        - name: ENABLE_K8S_APPLY
+          value: "true"
+        - name: TEAM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: BASE_DOMAIN
+          value: "agents.team-f.teams.eafit.testnet.verana.network"
+        volumeMounts:
+        - name: data-storage
+          mountPath: /app/data
+        - name: uploads-storage
+          mountPath: /app/uploads
+        - name: generated-storage
+          mountPath: /app/generated
+      volumes:
+      - name: data-storage
+        persistentVolumeClaim:
+          claimName: persona-creator-data-pvc
+      - name: uploads-storage
+        persistentVolumeClaim:
+          claimName: persona-creator-uploads-pvc
+      - name: generated-storage
+        persistentVolumeClaim:
+          claimName: persona-creator-generated-pvc

@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: live-k8s-persona-5cf9
+  namespace: team-f
+  labels:
+    app: live-k8s-persona-5cf9
+    managedBy: persona-ai-agent-creator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: live-k8s-persona-5cf9
+  template:
+    metadata:
+      labels:
+        app: live-k8s-persona-5cf9
+    spec:
+      containers:
+        - name: chatbot
+          image: io2060/hologram-generic-ai-agent-app:latest
+          ports:
+            - containerPort: 3003
+          env:
+            - name: SERVICE_NAME
+              value: Live K8s Bot
+            - name: AGENT_PUBLIC_URL
+              value: >-
+                https://live-k8s-persona-5cf9.agents.team-f.teams.eafit.testnet.verana.network
+            - name: AGENT_PACK_PATH
+              value: /config/agent-pack.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: live-k8s-persona-5cf9-svc
+  namespace: team-f
+spec:
+  selector:
+    app: live-k8s-persona-5cf9
+  ports:
+    - port: 80
+      targetPort: 3003
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: live-k8s-persona-5cf9-ingress
+  namespace: team-f
+spec:
+  rules:
+    - host: live-k8s-persona-5cf9.agents.team-f.teams.eafit.testnet.verana.network
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: live-k8s-persona-5cf9-svc
+                port:
+                  number: 80

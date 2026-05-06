@@ -1,0 +1,163 @@
+{
+  "common": {
+    "appTitle": "Persona AI Agent Creator",
+    "logoText": "Persona AI",
+    "title": "Persona AI Agent Creator",
+    "languageLabel": "Language",
+    "languageEnglish": "English",
+    "languageSpanish": "Spanish",
+    "status": "Status",
+    "when": "When",
+    "action": "Action",
+    "details": "Details",
+    "back": "Back",
+    "continue": "Continue",
+    "name": "Name",
+    "description": "Description",
+    "open": "Open",
+    "edit": "Edit",
+    "manage": "Manage",
+    "footer": "Persona AI Agent Creator \u2014 Built for the EAFIT Challenge",
+    "id": "ID",
+    "aiAgents": "AI agents"
+  },
+  "nav": {
+    "myBots": "My Bots",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "loginSubtitle": "Sign in to manage your {0}",
+    "registerTitle": "Register",
+    "createAccountTitle": "Create Account",
+    "registerSubtitle": "Start building your AI agents",
+    "emailLabel": "Email",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Min. 8 characters",
+    "passwordHint": "Choose a strong password with at least 8 characters",
+    "loginSubmit": "Sign in",
+    "registerSubmit": "Create account",
+    "createAccountSubmit": "Create Account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "registerLink": "Create one",
+    "signInLink": "Sign in"
+  },
+  "validation": {
+    "registerRequired": "Email and password are required.",
+    "registerExists": "Email is already registered.",
+    "registerFail": "Could not create account.",
+    "loginInvalid": "Invalid credentials.",
+    "botNotFound": "Bot not found",
+    "botRequiredFields": "Persona, service, and prompt fields are required.",
+    "botAtLeastOneMcp": "Select at least one MCP server."
+  },
+  "bots": {
+    "title": "My AI Bots",
+    "subtitle": "Create, edit, and publish in just a few clicks.",
+    "createButton": "Create New Bot",
+    "empty": "No bots yet. Start by creating your first assistant.",
+    "manage": "Manage",
+    "openLive": "Open Live Bot",
+    "lastUpdated": "Last updated"
+  },
+  "form": {
+    "createBot": "Create bot",
+    "saveChanges": "Save changes",
+    "intro": "Follow these simple steps. You can keep it basic now and refine later.",
+    "step1": "Persona",
+    "step2": "Service",
+    "step3": "Behavior",
+    "step4": "Extras",
+    "whoTitle": "Who is your assistant?",
+    "assistantName": "Assistant Name",
+    "assistantNameHint": "Example: Laura, Carlos, My Business Assistant.",
+    "profession": "Profession or Role",
+    "professionHint": "Example: Plumber, Tutor, Dentist, Legal Advisor.",
+    "shortDescription": "Short Description",
+    "photoUrl": "Photo URL (optional)",
+    "uploadPhoto": "Or upload photo (optional)",
+    "serviceTitle": "What should it help users with?",
+    "serviceName": "Service Name",
+    "serviceNameHint": "Example: Home Plumbing Booking, Math Tutor Assistant.",
+    "category": "Category",
+    "categoryHint": "Example: home-services, education, healthcare.",
+    "serviceDescription": "Service Description",
+    "behaviorTitle": "How should it behave?",
+    "instructions": "Assistant Instructions",
+    "promptHint": "Tip: Start with \"Be friendly, clear, and practical. Ask follow-up questions when needed.\"",
+    "extrasTitle": "Extra capabilities (optional but useful)",
+    "extrasSubtitle": "Choose what your assistant can access.",
+    "knowledgeTitle": "Knowledge sources (optional)",
+    "knowledgeLabel": "Add one URL per line",
+    "knowledgeHint": "Example: your FAQ page, public docs, service policies."
+  },
+  "bot": {
+    "myBots": "My AI Bots",
+    "botsSubtitle": "Create, edit, and publish your persona agents",
+    "createBot": "Create Bot",
+    "createFirstBot": "Create Your First Bot",
+    "noBotsYet": "No bots yet",
+    "noBotsHint": "Start by creating your first AI assistant",
+    "manage": "Manage",
+    "publicUrl": "Public URL",
+    "persona": "Persona",
+    "profession": "Profession",
+    "service": "Service",
+    "category": "Category",
+    "instructions": "Instructions",
+    "mcpIntegrations": "MCP Integrations",
+    "knowledgeBase": "Knowledge Base",
+    "recentRuns": "Recent Runs",
+    "noRunsYet": "No runs yet",
+    "started": "Started",
+    "duration": "Duration",
+    "publish": "Publish",
+    "published": "Published",
+    "status": "Status"
+  },
+  "detail": {
+    "subtitle": "Manage this assistant and publish it for Hologram users.",
+    "editSetup": "Edit Setup",
+    "serviceCategory": "Service Category",
+    "extraCapabilities": "Extra Capabilities",
+    "publicUrl": "Public URL",
+    "publishWhatHappens": "What happens when you publish?",
+    "publishOutcome1": "Your bot is deployed to Kubernetes in your team namespace.",
+    "publishOutcome2": "A public URL is created to connect from Hologram.",
+    "publishOutcome3": "You can unpublish at any time from this page.",
+    "knowledgeSources": "Knowledge Sources",
+    "noKnowledge": "No knowledge sources configured.",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "artifactsTitle": "Deployment Artifacts",
+    "artifactsEmpty": "No deployment artifacts generated yet.",
+    "activityTitle": "Deployment Activity"
+  },
+  "mcp": {
+    "github": {
+      "name": "GitHub",
+      "description": "Repo search, issues, pull requests, and file browsing."
+    },
+    "weather": {
+      "name": "Weather API",
+      "description": "Check weather conditions for service planning."
+    },
+    "wikipedia": {
+      "name": "Wikipedia",
+      "description": "Reference public knowledge for broad Q&A."
+    },
+    "google-calendar": {
+      "name": "Google Calendar",
+      "description": "Manage events and calendar"
+    },
+    "gmail": {
+      "name": "Gmail",
+      "description": "Send and read emails"
+    }
+  }
+}

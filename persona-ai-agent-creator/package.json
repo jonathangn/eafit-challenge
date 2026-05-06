@@ -1,0 +1,33 @@
+{
+  "name": "persona-ai-agent-creator",
+  "version": "1.0.0",
+  "description": "Persona AI Agent Creator MVP for EAFIT challenge",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "check": "node --check src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.9.0",
+    "cookie-parser": "^1.4.7",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "js-yaml": "^4.1.1",
+    "jsonwebtoken": "^9.0.3",
+    "lowdb": "^5.1.0",
+    "multer": "^2.1.1",
+    "nanoid": "^5.1.11",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "slugify": "^1.6.9"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

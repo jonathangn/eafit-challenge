@@ -1,0 +1,26 @@
+metadata:
+  id: live-k8s-persona-5cf9
+  displayName: Live K8s Bot
+  description: Schedules and answers FAQs
+  defaultLanguage: en
+  tags:
+    - eafit
+    - persona
+    - agent
+persona:
+  name: Live K8s Persona
+  profession: Tutor
+  description: Helps students
+  photoUrl: ''
+llm:
+  provider: openai
+  model: gpt-5.4-mini
+  temperature: 0.3
+prompt: You are a tutor assistant
+rag:
+  remoteUrls:
+    - https://example.com/eafit.md
+mcp:
+  enabledServers:
+    - github
+    - wikipedia
