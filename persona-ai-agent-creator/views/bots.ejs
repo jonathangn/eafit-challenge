@@ -9,8 +9,8 @@
             <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface"><%= t('bot.myBots') %></h1>
             <p class="font-body-md text-body-md text-on-surface-variant"><%= t('bot.botsSubtitle') %></p>
         </div>
-        <a href="/bots/new" class="w-14 h-14 rounded-full bg-gradient-primary inner-glow flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-110 transition-transform active:scale-95">
-            <span class="material-symbols-outlined text-3xl text-on-primary">add</span>
+        <a href="/bots/new" aria-label="<%= t('bot.createFirstBot') %>" class="w-14 h-14 rounded-full bg-gradient-primary inner-glow flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-110 transition-transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary">
+            <span class="material-symbols-outlined text-3xl text-on-primary" aria-hidden="true">add</span>
         </a>
     </div>
 
@@ -51,7 +51,7 @@
                                 <% if (bot.publish_status === 'published' || bot.publish_status === 'applied') { %>
                                     <form action="/bots/<%= bot.id %>/unpublish" method="post" class="m-0">
                                         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                                        <button type="submit" class="w-14 h-7 rounded-full bg-[#10b981] flex items-center p-1 transition-all shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+                                        <button type="submit" aria-label="<%= t('bot.published') %> - Click to unpublish" class="w-14 h-7 rounded-full bg-[#10b981] flex items-center p-1 transition-all shadow-[0_0_15px_rgba(16,185,129,0.4)] focus:outline-none focus:ring-2 focus:ring-[#10b981]/50">
                                             <div class="w-5 h-5 bg-white rounded-full flex items-center justify-center translate-x-7 transition-transform shadow-md">
                                                 <span class="material-symbols-outlined text-[#10b981] text-[12px]" style="font-variation-settings: 'FILL' 1;">check</span>
                                             </div>
@@ -61,7 +61,7 @@
                                 <% } else { %>
                                     <form action="/bots/<%= bot.id %>/publish" method="post" class="m-0">
                                         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                                        <button type="submit" class="w-14 h-7 rounded-full bg-surface-variant/50 border border-outline/10 flex items-center p-1 transition-all opacity-60 hover:opacity-100">
+                                        <button type="submit" aria-label="<%= t('bot.draft') %> - Click to publish" class="w-14 h-7 rounded-full bg-surface-variant/50 border border-outline/10 flex items-center p-1 transition-all opacity-60 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-primary/50">
                                             <div class="w-5 h-5 bg-on-surface-variant rounded-full flex items-center justify-center translate-x-0 transition-transform">
                                                 <span class="material-symbols-outlined text-surface text-[12px]">rocket</span>
                                             </div>
@@ -87,8 +87,8 @@
                             
                             <form action="/bots/<%= bot.id %>/delete" method="post" class="m-0">
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                                <button type="button" onclick="window._deleteForm=this.closest('form');document.getElementById('listDeleteModal').classList.remove('hidden')" class="text-on-surface-variant/40 hover:text-error transition-colors">
-                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                <button type="button" aria-label="<%= t('common.delete') %> - <%= bot.service_name %>" onclick="window._deleteForm=this.closest('form');document.getElementById('listDeleteModal').classList.remove('hidden')" class="text-on-surface-variant/40 hover:text-error transition-colors focus:outline-none focus:ring-2 focus:ring-error/50 rounded-lg p-1">
+                                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">delete</span>
                                 </button>
                             </form>
                         </div>

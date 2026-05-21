@@ -16,15 +16,15 @@
   const modalHasLoader = typeof hasLoader !== 'undefined' ? hasLoader : false;
 %>
 
-<div id="<%= modalId %>" class="fixed inset-0 z-[200] flex items-center justify-center p-margin-mobile hidden">
+<div id="<%= modalId %>" role="dialog" aria-modal="true" aria-labelledby="<%= modalId %>-title" aria-describedby="<%= modalId %>-desc" class="fixed inset-0 z-[200] flex items-center justify-center p-margin-mobile hidden">
     <div class="absolute inset-0 bg-background/80 backdrop-blur-md"></div>
     <div class="glass-modal bg-surface-container rounded-3xl p-10 max-w-sm w-full text-center relative z-10 space-y-6">
         <div class="w-20 h-20 bg-<%= modalIconColor %>/10 rounded-full flex items-center justify-center mx-auto">
             <span class="material-symbols-outlined text-4xl text-<%= modalIconColor %> <%= modalHasLoader ? 'animate-bounce' : '' %>"><%= modalIcon %></span>
         </div>
         <div class="space-y-2">
-            <h3 class="font-headline-md text-headline-md text-on-surface"><%= modalTitle %></h3>
-            <p class="font-body-md text-body-md text-on-surface-variant"><%= modalDescription %></p>
+            <h3 id="<%= modalId %>-title" class="font-headline-md text-headline-md text-on-surface"><%= modalTitle %></h3>
+            <p id="<%= modalId %>-desc" class="font-body-md text-body-md text-on-surface-variant"><%= modalDescription %></p>
         </div>
         <% if (modalHasLoader) { %>
             <div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">

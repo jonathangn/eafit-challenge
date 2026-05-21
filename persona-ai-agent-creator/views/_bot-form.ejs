@@ -116,7 +116,7 @@
                                 <div id="photo-indicator" class="input-enhanced flex items-center gap-2 h-full w-full">
                                     <span class="material-symbols-outlined text-sm">image</span>
                                     <span class="flex-1 text-on-surface-variant truncate"><%= t('form.photoUploaded') %></span>
-                                    <a href="#" onclick="event.preventDefault();this.closest('#photo-indicator').style.display='none';const field = document.getElementById('photo-url-field');field.style.display='block';field.focus();return false" class="text-primary text-xs font-bold hover:underline shrink-0"><%= t('form.photoChangeUrl') %></a>
+                                    <button type="button" onclick="this.closest('#photo-indicator').style.display='none';const field = document.getElementById('photo-url-field');field.style.display='block';field.focus();" class="text-primary text-xs font-bold hover:underline shrink-0 focus:outline-none bg-transparent border-none p-0 cursor-pointer"><%= t('form.photoChangeUrl') %></button>
                                 </div>
                                 <input type="url" id="photo-url-field" name="photoUrl" class="input-enhanced w-full h-full" style="display: none;" placeholder="<%= t('form.photoUrlPlaceholder') %>" oninput="updateMockup()" />
                             <% } else { %>
@@ -152,8 +152,8 @@
                 <% mcpCatalog.forEach(mcp => {
                    const isChecked = bot && bot.mcp_servers?.includes(mcp.id);
                 %>
-                <label class="skill-checkbox relative glass-panel rounded-3xl p-6 flex flex-col items-start gap-4 hover:bg-white/5 transition-all cursor-pointer group shadow-lg <%= isChecked ? 'bg-primary/10 border-primary/40' : '' %>">
-                    <input type="checkbox" name="mcpServers" value="<%= mcp.id %>" <%= isChecked ? 'checked' : '' %> class="hidden" onchange="toggleSkill(this)" />
+                <label class="skill-checkbox relative glass-panel rounded-3xl p-6 flex flex-col items-start gap-4 hover:bg-white/5 transition-all cursor-pointer group shadow-lg <%= isChecked ? 'bg-primary/10 border-primary/40' : '' %> focus-within:ring-2 focus-within:ring-primary/70 focus-within:border-primary/40">
+                    <input type="checkbox" name="mcpServers" value="<%= mcp.id %>" <%= isChecked ? 'checked' : '' %> class="sr-only" onchange="toggleSkill(this)" />
                     
                     <div class="flex w-full justify-between items-start">
                         <div class="p-3 rounded-2xl bg-surface-container-highest/50 text-3xl shadow-inner">
@@ -192,7 +192,10 @@
                 <div class="space-y-3">
                     <label class="label-enhanced"><%= t('form.toneSelectLabel') %></label>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="tone-chips">
-                        <button type="button" onclick="toggleTone('friendly')" data-tone="friendly" class="tone-chip glass-panel rounded-2xl p-4 flex items-center gap-3 border border-outline/10 hover:bg-primary/5 hover:border-primary/30 transition-all cursor-pointer text-left">
+                        <% 
+                           const activeTones = bot && bot.tones ? bot.tones : [];
+                        %>
+                        <button type="button" aria-pressed="<%= activeTones.includes('friendly') ? 'true' : 'false' %>" onclick="toggleTone('friendly')" data-tone="friendly" class="tone-chip glass-panel rounded-2xl p-4 flex items-center gap-3 border border-outline/10 hover:bg-primary/5 hover:border-primary/30 transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary/50">
                             <span class="text-3xl shrink-0">😊</span>
                             <div class="flex-1 min-w-0">
                                 <div class="font-headline-md text-headline-md text-on-surface font-bold truncate"><%= t('form.toneFriendly') %></div>
@@ -200,7 +203,7 @@
                             </div>
                             <span class="material-symbols-outlined text-primary shrink-0 opacity-0 scale-50 transition-all duration-300" style="font-variation-settings: 'FILL' 1;">check_circle</span>
                         </button>
-                        <button type="button" onclick="toggleTone('professional')" data-tone="professional" class="tone-chip glass-panel rounded-2xl p-4 flex items-center gap-3 border border-outline/10 hover:bg-primary/5 hover:border-primary/30 transition-all cursor-pointer text-left">
+                        <button type="button" aria-pressed="<%= activeTones.includes('professional') ? 'true' : 'false' %>" onclick="toggleTone('professional')" data-tone="professional" class="tone-chip glass-panel rounded-2xl p-4 flex items-center gap-3 border border-outline/10 hover:bg-primary/5 hover:border-primary/30 transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary/50">
                             <span class="text-3xl shrink-0">👔</span>
                             <div class="flex-1 min-w-0">
                                 <div class="font-headline-md text-headline-md text-on-surface font-bold truncate"><%= t('form.toneProfessional') %></div>
@@ -208,7 +211,7 @@
                             </div>
                             <span class="material-symbols-outlined text-primary shrink-0 opacity-0 scale-50 transition-all duration-300" style="font-variation-settings: 'FILL' 1;">check_circle</span>
                         </button>
-                        <button type="button" onclick="toggleTone('concise')" data-tone="concise" class="tone-chip glass-panel rounded-2xl p-4 flex items-center gap-3 border border-outline/10 hover:bg-primary/5 hover:border-primary/30 transition-all cursor-pointer text-left">
+                        <button type="button" aria-pressed="<%= activeTones.includes('concise') ? 'true' : 'false' %>" onclick="toggleTone('concise')" data-tone="concise" class="tone-chip glass-panel rounded-2xl p-4 flex items-center gap-3 border border-outline/10 hover:bg-primary/5 hover:border-primary/30 transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary/50">
                             <span class="text-3xl shrink-0">⚡</span>
                             <div class="flex-1 min-w-0">
                                 <div class="font-headline-md text-headline-md text-on-surface font-bold truncate"><%= t('form.toneConcise') %></div>
@@ -216,7 +219,7 @@
                             </div>
                             <span class="material-symbols-outlined text-primary shrink-0 opacity-0 scale-50 transition-all duration-300" style="font-variation-settings: 'FILL' 1;">check_circle</span>
                         </button>
-                        <button type="button" onclick="toggleTone('creative')" data-tone="creative" class="tone-chip glass-panel rounded-2xl p-4 flex items-center gap-3 border border-outline/10 hover:bg-primary/5 hover:border-primary/30 transition-all cursor-pointer text-left">
+                        <button type="button" aria-pressed="<%= activeTones.includes('creative') ? 'true' : 'false' %>" onclick="toggleTone('creative')" data-tone="creative" class="tone-chip glass-panel rounded-2xl p-4 flex items-center gap-3 border border-outline/10 hover:bg-primary/5 hover:border-primary/30 transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary/50">
                             <span class="text-3xl shrink-0">🎨</span>
                             <div class="flex-1 min-w-0">
                                 <div class="font-headline-md text-headline-md text-on-surface font-bold truncate"><%= t('form.toneCreative') %></div>
@@ -256,9 +259,9 @@
                     }) %>
 
                     <div class="space-y-2">
-                        <label class="label-enhanced"><%= t('form.ageLabel') %></label>
+                        <label class="label-enhanced" for="minimumAge"><%= t('form.ageLabel') %></label>
                         <div class="flex items-center gap-6 bg-surface-container-lowest border border-outline rounded-2xl p-4 shadow-inner">
-                            <input type="range" name="minimumAge" min="1" max="100" value="<%= bot ? (bot.minimum_age || 1) : 1 %>" class="flex-1 accent-primary h-1.5 bg-surface-container rounded-full appearance-none cursor-pointer" oninput="document.getElementById('age-val').innerText = this.value" />
+                            <input type="range" id="minimumAge" name="minimumAge" min="1" max="100" value="<%= bot ? (bot.minimum_age || 1) : 1 %>" class="flex-1 accent-primary h-1.5 bg-surface-container rounded-full appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50" oninput="document.getElementById('age-val').innerText = this.value" />
                             <span class="w-14 text-center font-bold text-primary bg-primary/10 py-2 rounded-xl text-lg border border-primary/20" id="age-val"><%= bot ? (bot.minimum_age || 1) : 1 %></span>
                         </div>
                     </div>
@@ -297,7 +300,7 @@
 </div>
 
 <!-- Fixed Bottom Action Area & Preview Snippet -->
-<div class="fixed bottom-0 left-0 right-0 p-margin-mobile bg-surface backdrop-blur-xl z-50 rounded-t-[32px] inner-glow pb-8 animate-in slide-in-from-bottom-full duration-700 delay-300">
+<div aria-hidden="true" class="fixed bottom-0 left-0 right-0 p-margin-mobile bg-surface backdrop-blur-xl z-50 rounded-t-[32px] inner-glow pb-8 animate-in slide-in-from-bottom-full duration-700 delay-300">
     <div class="max-w-xl mx-auto">
         <!-- Live Preview Snippet -->
         <div class="flex gap-5 p-5 glass-panel rounded-3xl shadow-2xl min-h-28">
@@ -360,6 +363,13 @@
                 el.classList.toggle("hidden", stepNum !== currentStep);
                 if (stepNum === currentStep) {
                     el.classList.add('animate-in', 'fade-in', 'slide-in-from-bottom-4');
+                    // Shift screen reader focus to the start of the new step
+                    const heading = el.querySelector('h2');
+                    if (heading) {
+                        heading.setAttribute('tabindex', '-1');
+                        heading.classList.add('focus:outline-none');
+                        heading.focus();
+                    }
                 }
             });
             
@@ -496,6 +506,7 @@
             const chip = document.querySelector(`.tone-chip[data-tone="${tone}"]`);
             if (chip) {
                 const isSelected = tones.includes(tone);
+                chip.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
                 chip.classList.toggle('bg-primary/10', isSelected);
                 chip.classList.toggle('border-primary/40', isSelected);
                 
@@ -516,6 +527,7 @@
             document.querySelectorAll('.tone-chip').forEach(chip => {
                 const tone = chip.getAttribute('data-tone');
                 const isSelected = toneList.includes(tone);
+                chip.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
                 chip.classList.toggle('bg-primary/10', isSelected);
                 chip.classList.toggle('border-primary/40', isSelected);
                 
