@@ -1,67 +1,121 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="<%= currentLang %>">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Persona AI Agent Creator</title>
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="robots" content="index, follow" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <title><%= typeof title !== 'undefined' ? title : t('common.title') %></title>
+    <meta name="description" content="<%= t('common.description') %>" />
+    <link rel="canonical" href="<%= typeof canonicalUrl !== 'undefined' ? canonicalUrl : 'https://persona.team-f.teams.eafit.testnet.verana.network' + (typeof req !== 'undefined' ? req.originalUrl : '') %>" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      .dark body { background-color: #1a1a1a; color: #e5e5e5; }
-    </style>
-    <link rel="stylesheet" href="/styles.css" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://persona.team-f.teams.eafit.testnet.verana.network/" />
+    <meta property="og:title" content="<%= typeof title !== 'undefined' ? title : t('common.title') %>" />
+    <meta property="og:description" content="<%= t('common.description') %>" />
+    <meta property="og:image" content="https://persona.team-f.teams.eafit.testnet.verana.network/og-image.png" />
+    <meta property="og:locale" content="<%= currentLang === 'es' ? 'es_ES' : 'en_US' %>" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://persona.team-f.teams.eafit.testnet.verana.network/" />
+    <meta property="twitter:title" content="<%= typeof title !== 'undefined' ? title : t('common.title') %>" />
+    <meta property="twitter:description" content="<%= t('common.description') %>" />
+    <meta property="twitter:image" content="https://persona.team-f.teams.eafit.testnet.verana.network/og-image.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <link rel="stylesheet" href="/css/output.css?v=<%= (Date.now() / 10000).toFixed(0) %>" />
     <script>
-      if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      // Persistent Theme Logic - Default to light mode
+      if (localStorage.getItem('theme') === 'dark') {
         document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
       }
       function toggleTheme() {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
       }
+      // Default no-op for pages without wizard form
+      window.saveWizardState = () => true;
     </script>
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="container">
-        <a href="/" class="logo">
-          <span class="logo-icon">✨</span>
-          <span>Persona AI Agent Creator</span>
-        </a>
+
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Persona Studio",
+      "description": "Create and manage AI persona agents with custom skills, knowledge, and MCP integrations",
+      "url": "https://persona.team-f.teams.eafit.testnet.verana.network",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "inLanguage": "<%= currentLang === 'es' ? 'es' : 'en' %>"
+    }
+    </script>
+
+</head>
+<body class="text-on-background min-h-screen overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container" style="background: var(--bg-gradient); background-attachment: fixed;">
+    <header class="glass-bar sticky top-0 z-50 w-full">
+        <div class="flex justify-between items-center px-margin-mobile h-24 max-w-container-max mx-auto">
+        <div class="flex items-center gap-4">
+            <a href="/" class="font-headline-md text-headline-md font-bold text-gradient-primary">
+                <%= t('common.logoText') %>
+            </a>
+        </div>
         
-        <nav style="display: flex; align-items: center; gap: 0.25rem;">
-          <% if (currentUser) { %>
-            <a href="/bots" class="nav-link">🤖 My Agents</a>
-            <form action="/logout" method="post" style="display:inline;">
-              <button type="submit" class="nav-link" style="border:none;background:none;cursor:pointer;">🚪 Logout</button>
-            </form>
-          <% } else { %>
-            <a href="/login" class="nav-link">🔐 Login</a>
-            <a href="/register" class="nav-link">📝 Register</a>
-          <% } %>
+        <nav class="flex items-center gap-base">
+            <% if (currentUser) { %>
+                <a href="/bots" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-surface-container-highest/50 transition-colors font-label-md text-label-md hover:text-primary" style="color: var(--on-surface);">
+                    <span class="material-symbols-outlined">smart_toy</span>
+                    <%= t('nav.myAgents') %>
+                </a>
+                <form action="/logout" method="post" class="inline">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <button type="submit" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-surface-container-highest/50 transition-colors font-label-md text-label-md hover:text-primary" style="color: var(--on-surface);">
+                        <span class="material-symbols-outlined">logout</span>
+                        <%= t('nav.logout') %>
+                    </button>
+                </form>
+            <% } else { %>
+                <a href="/login" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-surface-container-highest/50 transition-colors font-label-md text-label-md hover:text-primary" style="color: var(--on-surface);">
+                    <span class="material-symbols-outlined">login</span>
+                    <%= t('nav.login') %>
+                </a>
+                <a href="/register" class="btn-primary btn-base px-6 py-2 rounded-full font-bold shadow-lg shadow-primary/20" style="color: var(--on-primary);">
+                    <%= t('nav.register') %>
+                </a>
+            <% } %>
 
-          <%# Language toggle %>
-          <div style="display:flex; align-items:center; margin-left:0.5rem; border: 1px solid var(--border-color); border-radius: 9999px; overflow:hidden; font-size:0.8rem; font-weight:600;">
-            <a href="/set-lang/en"
-               style="padding: 0.3rem 0.6rem; text-decoration:none; transition: background 0.2s;
-                      background: <%= currentLang === 'en' ? 'var(--primary)' : 'transparent' %>;
-                      color: <%= currentLang === 'en' ? '#fff' : 'var(--text-muted)' %>;">
-              EN
-            </a>
-            <a href="/set-lang/es"
-               style="padding: 0.3rem 0.6rem; text-decoration:none; transition: background 0.2s;
-                      background: <%= currentLang === 'es' ? 'var(--primary)' : 'transparent' %>;
-                      color: <%= currentLang === 'es' ? '#fff' : 'var(--text-muted)' %>;">
-              ES
-            </a>
-          </div>
+            <!-- Language Toggle -->
+            <div class="flex items-center bg-surface-container-low border border-outline/30 rounded-full overflow-hidden ml-2">
+                <a href="/set-lang/en" onclick="return saveWizardState()" class="px-3 py-1.5 text-xs font-bold transition-colors <%= currentLang === 'en' ? 'bg-gradient-primary' : 'hover:bg-surface-container-highest/50' %>" style="color: <%= currentLang === 'en' ? 'var(--on-primary)' : 'var(--on-surface)' %>;">
+                    EN
+                </a>
+                <a href="/set-lang/es" onclick="return saveWizardState()" class="px-3 py-1.5 text-xs font-bold transition-colors <%= currentLang === 'es' ? 'bg-gradient-primary' : 'hover:bg-surface-container-highest/50' %>" style="color: <%= currentLang === 'es' ? 'var(--on-primary)' : 'var(--on-surface)' %>;">
+                    ES
+                </a>
+            </div>
 
-          <button onclick="toggleTheme()" class="theme-toggle" style="margin-left: 0.25rem;" title="Toggle Dark Mode">
-            <span class="dark:hidden">🌙</span>
-            <span class="hidden dark:inline">☀️</span>
-          </button>
+            <!-- Theme Toggle -->
+            <button onclick="toggleTheme()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-highest/50 transition-colors" style="color: var(--on-surface);" aria-label="Toggle theme">
+                <span class="material-symbols-outlined dark:hidden" aria-hidden="true">dark_mode</span>
+                <span class="material-symbols-outlined hidden dark:inline" aria-hidden="true">light_mode</span>
+            </button>
         </nav>
-      </div>
+        </div>
     </header>
 
-    <main>
-      <div class="container">
+    <main class="max-w-container-max mx-auto">

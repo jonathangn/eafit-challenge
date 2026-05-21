@@ -1,44 +1,161 @@
 <%- include("partials/header") %>
 
-<div class="card">
-  <div class="card-header">
-    <div>
-      <h2 style="margin:0;"><%= t('bot.myBots') %></h2>
-      <p class="text-muted text-sm"><%= t('bot.botsSubtitle') %></p>
+<%- include("partials/toast") %>
+
+<div class="px-margin-mobile py-stack-md max-w-2xl mx-auto space-y-stack-md pb-24">
+    <!-- Dashboard Header -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface"><%= t('bot.myBots') %></h1>
+            <p class="font-body-md text-body-md text-on-surface-variant"><%= t('bot.botsSubtitle') %></p>
+        </div>
+        <a href="/bots/new" class="w-14 h-14 rounded-full bg-gradient-primary inner-glow flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-110 transition-transform active:scale-95">
+            <span class="material-symbols-outlined text-3xl text-on-primary">add</span>
+        </a>
     </div>
-    <a href="/bots/new" class="btn btn-primary">+ <%= t('bot.createBot') %></a>
-  </div>
+
+    <% if (bots && bots.length > 0) { %>
+        <div class="space-y-6">
+            <% bots.forEach(bot => { %>
+                <div class="relative group">
+                    <!-- Bot Card -->
+                    <div class="glass-panel rounded-3xl p-6 flex flex-col gap-6 hover:shadow-2xl transition-all relative z-10 overflow-hidden shadow-xl">
+                        <!-- Status Glow Background -->
+                        <% if (bot.publish_status === 'published' || bot.publish_status === 'applied') { %>
+                            <div class="absolute -top-10 -right-10 w-40 h-40 bg-[#10b981]/5 blur-3xl pointer-events-none"></div>
+                        <% } %>
+
+                        <div class="flex items-center gap-5">
+                            <!-- Avatar -->
+                            <div class="w-16 h-16 rounded-2xl bg-surface-container-highest flex-shrink-0 overflow-hidden border border-outline/10 shadow-inner">
+                                <% if (bot.photo_url) { %>
+                                    <img src="<%= bot.photo_url %>" alt="<%= bot.service_name %>" class="w-full h-full object-cover" loading="lazy" />
+                                <% } else { %>
+                                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                                        <span class="material-symbols-outlined text-primary/40 text-3xl">smart_toy</span>
+                                    </div>
+                                <% } %>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-headline-md text-headline-md text-on-surface truncate"><%= bot.service_name %></h3>
+                                    <span class="w-2 h-2 rounded-full <%= (bot.publish_status === 'published' || bot.publish_status === 'applied') ? 'bg-[#10b981] animate-pulse' : 'bg-on-surface-variant/30' %>"></span>
+                                </div>
+                                <p class="font-body-md text-body-md text-on-surface-variant truncate"><%= bot.persona_profession %></p>
+                            </div>
+
+                            <!-- Quick Action (Rocket Toggle) -->
+                            <div class="flex flex-col items-center gap-1">
+                                <% if (bot.publish_status === 'published' || bot.publish_status === 'applied') { %>
+                                    <form action="/bots/<%= bot.id %>/unpublish" method="post" class="m-0">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                                        <button type="submit" class="w-14 h-7 rounded-full bg-[#10b981] flex items-center p-1 transition-all shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+                                            <div class="w-5 h-5 bg-white rounded-full flex items-center justify-center translate-x-7 transition-transform shadow-md">
+                                                <span class="material-symbols-outlined text-[#10b981] text-[12px]" style="font-variation-settings: 'FILL' 1;">check</span>
+                                            </div>
+                                        </button>
+                                    </form>
+                                    <span class="text-label-sm font-bold text-[#10b981] uppercase tracking-widest"><%= t('bot.published') %></span>
+                                <% } else { %>
+                                    <form action="/bots/<%= bot.id %>/publish" method="post" class="m-0">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                                        <button type="submit" class="w-14 h-7 rounded-full bg-surface-variant/50 border border-outline/10 flex items-center p-1 transition-all opacity-60 hover:opacity-100">
+                                            <div class="w-5 h-5 bg-on-surface-variant rounded-full flex items-center justify-center translate-x-0 transition-transform">
+                                                <span class="material-symbols-outlined text-surface text-[12px]">rocket</span>
+                                            </div>
+                                        </button>
+                                    </form>
+                                    <span class="text-label-sm font-bold text-on-surface-variant opacity-80 uppercase tracking-widest"><%= t('bot.draft') %></span>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <!-- Footer Actions -->
+                        <div class="flex items-center justify-between pt-4 border-t border-outline/10">
+                            <div class="flex gap-6">
+                                <a href="/bots/<%= bot.id %>/edit" class="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                    <%= t('common.edit') %>
+                                </a>
+                                <a href="/bots/<%= bot.id %>" class="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    <%= t('common.view') %>
+                                </a>
+                            </div>
+                            
+                            <form action="/bots/<%= bot.id %>/delete" method="post" class="m-0">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                                <button type="button" onclick="window._deleteForm=this.closest('form');document.getElementById('listDeleteModal').classList.remove('hidden')" class="text-on-surface-variant/40 hover:text-error transition-colors">
+                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <!-- Enhanced Empty State -->
+        <div class="py-20 text-center space-y-8">
+            <div class="relative inline-block">
+                <div class="w-32 h-32 bg-primary/10 rounded-full flex items-center justify-center mx-auto blur-xl absolute inset-0 animate-pulse"></div>
+                <div class="w-32 h-32 bg-surface-container rounded-full flex items-center justify-center mx-auto border border-outline/20 relative z-10">
+                    <span class="material-symbols-outlined text-6xl text-primary/40">robot_2</span>
+                </div>
+            </div>
+            <div class="space-y-3 max-w-xs mx-auto">
+                <h2 class="font-headline-md text-headline-md text-on-surface"><%= t('bot.noBotsYet') %></h2>
+                <p class="font-body-md text-body-md text-on-surface-variant"><%= t('bot.noBotsHint') %></p>
+            </div>
+            <div class="pt-4">
+                <a href="/bots/new" class="btn-primary btn-base inline-flex px-10 py-4 font-bold shadow-xl text-on-primary">
+                    <span class="material-symbols-outlined">add_circle</span>
+                    <%= t('bot.createFirstBot') %>
+                </a>
+            </div>
+        </div>
+    <% } %>
 </div>
 
-<% if (!bots.length) { %>
-<div class="card">
-  <div class="empty-state">
-    <h3 class="empty-title"><%= t('bot.noBotsYet') %></h3>
-    <p class="empty-text"><%= t('bot.noBotsHint') %></p>
-    <a href="/bots/new" class="btn btn-primary"><%= t('bot.createFirstBot') %></a>
-  </div>
-</div>
-<% } else { %>
-<div class="bot-grid">
-  <% bots.forEach((bot) => { %>
-  <article class="bot-card">
-    <div class="bot-card-header">
-      <h3 class="bot-card-title"><%= bot.service_name %></h3>
-      <span class="badge badge-<%= bot.publish_status %>"><%= bot.publish_status %></span>
-    </div>
-    <div class="bot-card-body">
-      <p class="bot-card-meta">👤 <%= bot.persona_name %></p>
-      <p class="bot-card-meta text-xs text-muted"><%= t('bots.lastUpdated') %>: <%= new Date(bot.updated_at).toLocaleDateString() %></p>
-    </div>
-    <div class="bot-card-actions">
-      <a href="/bots/<%= bot.id %>" class="btn btn-sm btn-secondary"><%= t('bot.manage') %></a>
-      <% if (bot.public_url) { %>
-      <a href="<%= bot.public_url %>" target="_blank" rel="noreferrer" class="btn btn-sm btn-primary"><%= t('common.open') %></a>
-      <% } %>
-    </div>
-  </article>
-  <% }) %>
-</div>
-<% } %>
+<%- include("partials/modal", {
+    id: "listDeleteModal",
+    icon: "delete",
+    iconColor: "error",
+    title: t('detail.deleteConfirmTitle'),
+    description: t('detail.deleteConfirmDesc'),
+    cancelText: t('detail.cancel'),
+    confirmText: t('detail.deleteConfirmButton'),
+    confirmStyle: "error",
+    confirmAction: "window._deleteForm?.submit()"
+}) %>
+
+<script>
+(function() {
+    const params = new URLSearchParams(window.location.search);
+    const toastKey = params.get('toast');
+    const toastEl = document.getElementById('toast');
+    const msgEl = document.getElementById('toast-message');
+    const iconEl = document.getElementById('toast-icon');
+    
+    const messages = {
+        deleted: { text: '<%= t('common.toastDeleted') %>', icon: 'delete' },
+        published: { text: '<%= t('common.toastLive') %>', icon: 'rocket_launch' },
+        unpublished: { text: '<%= t('common.toastUnpublished') %>', icon: 'pause_circle' },
+        error: { text: '<%= t('common.toastError') %>', icon: 'error' }
+    };
+    
+    if (toastKey && messages[toastKey]) {
+        msgEl.textContent = messages[toastKey].text;
+        iconEl.textContent = messages[toastKey].icon;
+        toastEl.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+        window.history.replaceState({}, '', window.location.pathname);
+        setTimeout(() => {
+            toastEl.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+        }, 4000);
+    }
+})();
+</script>
 
 <%- include("partials/footer") %>

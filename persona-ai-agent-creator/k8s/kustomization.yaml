@@ -2,6 +2,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - pvc.yaml
+  - ingress.yaml
 
 images:
   - name: persona-creator-image

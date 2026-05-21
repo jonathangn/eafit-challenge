@@ -6,6 +6,8 @@ metadata:
     app: persona-creator
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: persona-creator
@@ -14,6 +16,7 @@ spec:
       labels:
         app: persona-creator
     spec:
+      serviceAccountName: team-f
       containers:
       - name: persona-creator
         image: persona-creator-image

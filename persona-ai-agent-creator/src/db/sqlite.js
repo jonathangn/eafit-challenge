@@ -12,12 +12,29 @@ if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 const sqlite = new Database(dbPath);
 sqlite.pragma('journal_mode = WAL');
 
+// Migrate existing databases: add columns that may not exist
+try { sqlite.exec(`ALTER TABLE bots ADD COLUMN minimum_age INTEGER DEFAULT 1`); } catch {};
+try { sqlite.exec(`ALTER TABLE users ADD COLUMN google_id TEXT`); } catch {};
+try { sqlite.exec(`ALTER TABLE bots ADD COLUMN mcp_config TEXT`); } catch {};
+try { sqlite.exec(`ALTER TABLE bots ADD COLUMN theme_color TEXT`); } catch {};
+try { sqlite.exec(`ALTER TABLE users ADD COLUMN reset_token TEXT`); } catch {};
+try { sqlite.exec(`ALTER TABLE users ADD COLUMN reset_token_expires INTEGER`); } catch {};
+try { sqlite.exec(`ALTER TABLE users ADD COLUMN is_verified INTEGER DEFAULT 0`); } catch {};
+try { sqlite.exec(`ALTER TABLE users ADD COLUMN verification_token TEXT`); } catch {};
+try { sqlite.exec(`ALTER TABLE users RENAME COLUMN password_hash TO password`); } catch {};
+try { sqlite.exec(`ALTER TABLE users ADD COLUMN name TEXT`); } catch {};
+
 sqlite.exec(`
   CREATE TABLE IF NOT EXISTS users (
-    id       TEXT PRIMARY KEY,
-    email    TEXT UNIQUE,
-    password TEXT,
-    name     TEXT
+    id                   TEXT PRIMARY KEY,
+    email                TEXT UNIQUE,
+    password             TEXT,
+    name                 TEXT,
+    google_id            TEXT,
+    reset_token          TEXT,
+    reset_token_expires  INTEGER,
+    is_verified          INTEGER DEFAULT 0,
+    verification_token   TEXT
   );
   CREATE TABLE IF NOT EXISTS bots (
     id                  TEXT PRIMARY KEY,
@@ -36,6 +53,7 @@ sqlite.exec(`
     publish_status      TEXT,
     photo_url           TEXT,
     theme_color         TEXT,
+    minimum_age         INTEGER DEFAULT 1,
     created_at          TEXT,
     updated_at          TEXT
   );
@@ -99,11 +117,23 @@ const db = {
     const rows = sqlite.prepare(`SELECT * FROM ${collection}`).all().map(parseJsonCols);
     const idx  = rows.findIndex(predicate);
     if (idx === -1) return;
-    const idKey    = collection === 'bot_versions' ? 'version_id' : 'id';
+    const pkInfo = sqlite.prepare(`PRAGMA table_info(${collection})`).all().find(c => c.pk === 1);
+    const idKey  = pkInfo ? pkInfo.name : 'id';
     const setClause = Object.keys(updates).map(k => `${k} = ?`).join(', ');
     const vals      = Object.values(updates).map(toSql);
     sqlite.prepare(`UPDATE ${collection} SET ${setClause} WHERE ${idKey} = ?`)
       .run(...vals, rows[idx][idKey]);
+  },
+  remove(collection, predicate) {
+    const rows = sqlite.prepare(`SELECT * FROM ${collection}`).all().map(parseJsonCols);
+    const toRemove = rows.filter(predicate);
+    const pkInfo = sqlite.prepare(`PRAGMA table_info(${collection})`).all().find(c => c.pk === 1);
+    const idKey = pkInfo ? pkInfo.name : 'id';
+    const del = sqlite.prepare(`DELETE FROM ${collection} WHERE ${idKey} = ?`);
+    for (const row of toRemove) {
+      del.run(row[idKey]);
+    }
+    return toRemove.length;
   }
 };
 

@@ -1,0 +1,55 @@
+<%
+  // Input Partial - Reusable form input component
+  // Required: name, label
+  // Optional: type, icon, placeholder, value, required, minlength, maxlength, autocomplete, id, isTextarea, rows, pattern, oninput, additionalInputClasses, additionalWrapperClasses
+  const inputId = typeof id !== 'undefined' ? id : name;
+  const inputType = typeof type !== 'undefined' ? type : 'text';
+  const inputIcon = typeof icon !== 'undefined' ? icon : null;
+  const inputPlaceholder = typeof placeholder !== 'undefined' ? placeholder : '';
+  const inputValue = typeof value !== 'undefined' ? value : '';
+  const isRequired = typeof required !== 'undefined' ? required : false;
+  const inputMinlength = typeof minlength !== 'undefined' ? minlength : null;
+  const inputMaxlength = typeof maxlength !== 'undefined' ? maxlength : null;
+  const inputAutocomplete = typeof autocomplete !== 'undefined' ? autocomplete : null;
+  const hasTextarea = typeof isTextarea !== 'undefined' ? isTextarea : false;
+  const inputRows = typeof rows !== 'undefined' ? rows : 3;
+  const inputPattern = typeof pattern !== 'undefined' ? pattern : null;
+  const inputOninput = typeof oninput !== 'undefined' ? oninput : null;
+  const extraInputClasses = typeof additionalInputClasses !== 'undefined' ? additionalInputClasses : '';
+  const extraWrapperClasses = typeof additionalWrapperClasses !== 'undefined' ? additionalWrapperClasses : '';
+%>
+
+<div class="space-y-2 <%= extraWrapperClasses %>">
+    <label class="label-enhanced" for="<%= inputId %>"><%= label %></label>
+    <div class="relative">
+        <% if (inputIcon) { %>
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface"><%= inputIcon %></span>
+        <% } %>
+        <% if (hasTextarea) { %>
+            <textarea
+                id="<%= inputId %>"
+                name="<%= name %>"
+                class="input-enhanced w-full <%= inputIcon ? 'pl-10' : '' %> <%= extraInputClasses %>"
+                rows="<%= inputRows %>"
+                <%= isRequired ? 'required' : '' %>
+                <%= inputOninput ? `oninput="${inputOninput}"` : '' %>
+                placeholder="<%= inputPlaceholder %>"
+            ><%= inputValue %></textarea>
+        <% } else { %>
+            <input
+                id="<%= inputId %>"
+                type="<%= inputType %>"
+                name="<%= name %>"
+                class="input-enhanced w-full h-[58px] <%= inputIcon ? 'pl-10' : '' %> <%= extraInputClasses %>"
+                <%= isRequired ? 'required' : '' %>
+                <%= inputMinlength ? `minlength="${inputMinlength}"` : '' %>
+                <%= inputMaxlength ? `maxlength="${inputMaxlength}"` : '' %>
+                <%= inputAutocomplete ? `autocomplete="${inputAutocomplete}"` : '' %>
+                <%= inputPattern ? `pattern="${inputPattern}"` : '' %>
+                <%= inputOninput ? `oninput="${inputOninput}"` : '' %>
+                value="<%= inputValue %>"
+                placeholder="<%= inputPlaceholder %>"
+            />
+        <% } %>
+    </div>
+</div>

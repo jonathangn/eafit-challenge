@@ -5,8 +5,12 @@ const jwt     = require('jsonwebtoken');
 const crypto  = require('crypto');
 
 const db        = require('../db/sqlite');
-const jwtSecret = process.env.JWT_SECRET || 'dev-secret';
+const logger    = require('../services/logger');
+const { jwtSecret } = require('../config');
+const { sendMail, getEmailTemplate } = require('../services/email');
 const router    = express.Router();
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 router.get('/register', (_req, res) => res.render('register', { error: null }));
 
@@ -15,32 +19,172 @@ router.post('/register', async (req, res) => {
   if (!email || !password || !name) {
     return res.status(400).render('register', { error: res.locals.t('validation.registerRequired') });
   }
+  if (!EMAIL_RE.test(email)) {
+    return res.status(400).render('register', { error: res.locals.t('validation.invalidEmail') });
+  }
   if (db.find('users', u => u.email === email)) {
     return res.status(400).render('register', { error: res.locals.t('validation.registerExists') });
   }
+  
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = db.push('users', {
+  const verificationToken = crypto.randomBytes(32).toString('hex');
+  
+  db.push('users', {
     id: crypto.randomBytes(16).toString('hex'),
     email,
     password: hashedPassword,
     name,
+    is_verified: 0,
+    verification_token: verificationToken,
   });
-  const token = jwt.sign({ id: user.id, email: user.email, name: user.name }, jwtSecret, { expiresIn: '7d' });
-  res.cookie('authToken', token, { httpOnly: true });
+
+  const activationUrl = `${req.protocol}://${req.get('host')}/verify-email?token=${verificationToken}`;
+
+  // SMTP not yet activated — show the link directly in the UI.
+  // When SMTP is ready: call sendMail() here and remove the actionLink render.
+  logger.info(`User registered (Verification Pending): ${email}`);
+  res.render('verify-pending', { email, error: null, success: null, actionLink: activationUrl });
+});
+
+router.get('/verify-pending', (req, res) => {
+  const email = req.query.email || '';
+  res.render('verify-pending', { email, error: null, success: null });
+});
+
+router.post('/resend-verification', async (req, res) => {
+  const email = req.body.email || '';
+  const user = db.find('users', u => u.email === email);
+  
+  if (!user) {
+    return res.render('verify-pending', { email, error: res.locals.t('validation.invalidEmail'), success: null });
+  }
+  if (user.is_verified === 1) {
+    return res.render('login', { error: null, success: res.locals.t('auth.verifySuccess') });
+  }
+
+  const verificationToken = crypto.randomBytes(32).toString('hex');
+  db.update('users', u => u.id === user.id, {
+    verification_token: verificationToken,
+  });
+
+  const activationUrl = `${req.protocol}://${req.get('host')}/verify-email?token=${verificationToken}`;
+
+  // SMTP not yet activated — show the link directly in the UI.
+  logger.info(`Verification link regenerated for: ${email}`);
+  res.render('verify-pending', { email, error: null, success: res.locals.t('validation.verificationSent'), actionLink: activationUrl });
+});
+
+router.get('/verify-email', async (req, res) => {
+  const token = req.query.token || '';
+  const user = db.find('users', u => u.verification_token === token);
+
+  if (!user) {
+    return res.render('login', { error: res.locals.t('validation.invalidResetToken'), success: null });
+  }
+
+  db.update('users', u => u.id === user.id, {
+    is_verified: 1,
+    verification_token: null,
+  });
+
+  const authToken = jwt.sign({ id: user.id, email: user.email, name: user.name }, jwtSecret, { expiresIn: '24h' });
+  res.cookie('authToken', authToken, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production' });
+
+  logger.info(`User successfully verified and logged in: ${user.email}`);
   res.redirect('/bots');
 });
 
-router.get('/login', (_req, res) => res.render('login', { error: null }));
+router.get('/login', (_req, res) => res.render('login', { error: null, success: null }));
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const user = db.find('users', u => u.email === email);
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(401).render('login', { error: res.locals.t('validation.loginInvalid') });
+    logger.warn(`Failed login attempt for: ${email}`);
+    return res.status(401).render('login', { error: res.locals.t('validation.loginInvalid'), success: null });
   }
-  const token = jwt.sign({ id: user.id, email: user.email, name: user.name }, jwtSecret, { expiresIn: '7d' });
-  res.cookie('authToken', token, { httpOnly: true });
+
+  if (user.is_verified === 0) {
+    logger.warn(`Failed login attempt (email not verified) for: ${email}`);
+    return res.render('verify-pending', { 
+      email, 
+      error: res.locals.t('validation.emailNotVerified'), 
+      success: null 
+    });
+  }
+
+  const token = jwt.sign({ id: user.id, email: user.email, name: user.name }, jwtSecret, { expiresIn: '24h' });
+  res.cookie('authToken', token, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production' });
+  logger.info(`User logged in: ${email}`);
   res.redirect('/bots');
+});
+
+router.get('/forgot-password', (_req, res) => res.render('forgot-password', { error: null, success: null }));
+
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  if (!email || !EMAIL_RE.test(email)) {
+    return res.status(400).render('forgot-password', { error: res.locals.t('validation.invalidEmail'), success: null });
+  }
+
+  let actionLink = null;
+  const user = db.find('users', u => u.email === email);
+  if (user) {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetExpires = Date.now() + 3600000; // 1 hour
+
+    db.update('users', u => u.id === user.id, {
+      reset_token: resetToken,
+      reset_token_expires: resetExpires,
+    });
+
+    actionLink = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
+
+    // SMTP not yet activated — show the link directly in the UI.
+    // When SMTP is ready: uncomment the block below and remove actionLink from render.
+    // const html = getEmailTemplate(...); await sendMail({ to: email, ... });
+    logger.info(`Password reset link generated for user: ${email}`);
+  } else {
+    logger.info(`Password reset requested for non-existent email: ${email}`);
+  }
+
+  // Anti-enumeration: always show success message, only show link if user exists
+  res.render('forgot-password', { error: null, success: res.locals.t('validation.forgotSent'), actionLink });
+});
+
+router.get('/reset-password/:token', (req, res) => {
+  const token = req.params.token;
+  const user = db.find('users', u => u.reset_token === token && u.reset_token_expires > Date.now());
+
+  if (!user) {
+    return res.render('login', { error: res.locals.t('validation.invalidResetToken'), success: null });
+  }
+
+  res.render('reset-password', { token, error: null });
+});
+
+router.post('/reset-password/:token', async (req, res) => {
+  const token = req.params.token;
+  const { password } = req.body;
+
+  if (!password || password.length < 8) {
+    return res.status(400).render('reset-password', { token, error: res.locals.t('auth.passwordHint') });
+  }
+
+  const user = db.find('users', u => u.reset_token === token && u.reset_token_expires > Date.now());
+  if (!user) {
+    return res.render('login', { error: res.locals.t('validation.invalidResetToken'), success: null });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  db.update('users', u => u.id === user.id, {
+    password: hashedPassword,
+    reset_token: null,
+    reset_token_expires: null,
+  });
+
+  logger.info(`Password successfully reset for user: ${user.email}`);
+  res.render('login', { error: null, success: res.locals.t('validation.resetTokenSuccess') });
 });
 
 router.post('/logout', (_req, res) => {

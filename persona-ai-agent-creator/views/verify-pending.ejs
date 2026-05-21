@@ -1,0 +1,92 @@
+<%- include("partials/header") %>
+
+<div class="relative py-20 px-margin-mobile">
+    <!-- Abstract gradient blob -->
+    <div class="absolute top-1/4 -right-1/4 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[100px] pointer-events-none"></div>
+
+    <div class="max-w-md w-full mx-auto relative z-10">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <span class="material-symbols-outlined text-primary text-[64px] mb-4 animate-pulse">mark_email_read</span>
+            <h2 class="font-headline-lg-mobile text-headline-lg-mobile mb-2 text-gradient-primary">
+                <%= t('auth.verifyPendingTitle') %>
+            </h2>
+            <p class="font-body-md text-body-md text-on-surface-variant">
+                <%= t('auth.verifyPendingSubtitle') %>
+            </p>
+        </div>
+
+        <!-- Pending Card -->
+        <div class="glass-panel p-8 shadow-2xl text-center space-y-6">
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="bg-error/10 border border-error/20 text-error p-4 rounded-xl text-sm flex gap-3 items-center text-left">
+                    <span class="material-symbols-outlined">error</span>
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <% if (typeof actionLink !== 'undefined' && actionLink && !(typeof success !== 'undefined' && success)) { %>
+                <div class="bg-primary/10 border border-primary/20 text-primary p-4 rounded-xl text-sm flex flex-col gap-3 items-start text-left">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined">info</span>
+                        <%= t('auth.verifyLinkReady') %>
+                    </div>
+                    <a href="<%= actionLink %>" class="w-full btn-primary btn-base py-2 text-center font-bold text-on-primary flex items-center justify-center gap-2 mt-1">
+                        <span class="material-symbols-outlined text-[18px]">verified_user</span>
+                        <%= t('auth.verifyAccountBtn') %>
+                    </a>
+                </div>
+            <% } %>
+
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="bg-primary/10 border border-primary/20 text-primary p-4 rounded-xl text-sm flex flex-col gap-3 items-start text-left">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <%= success %>
+                    </div>
+                    <% if (typeof actionLink !== 'undefined' && actionLink) { %>
+                    <a href="<%= actionLink %>" class="w-full btn-primary btn-base py-2 text-center font-bold text-on-primary flex items-center justify-center gap-2 mt-1">
+                        <span class="material-symbols-outlined text-[18px]">verified_user</span>
+                        <%= t('auth.verifyAccountBtn') %>
+                    </a>
+                    <% } %>
+                </div>
+            <% } %>
+
+            <p class="font-body-md text-body-md text-on-surface-variant">
+                <%= t('auth.verifyPendingText') %>
+            </p>
+
+            <form action="/resend-verification" method="post" class="pt-4 border-t border-outline/10 space-y-4">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <input type="hidden" name="email" value="<%= email %>" />
+
+                <button type="submit" id="resend-submit" class="btn-primary btn-base w-full py-3 font-bold shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span id="resend-submit-text"><%= t('auth.resendBtn') %></span>
+                    <span id="resend-submit-icon" class="material-symbols-outlined">mail</span>
+                </button>
+                <script>
+                    document.querySelector('form[action="/resend-verification"]')?.addEventListener('submit', function() {
+                        const b = document.getElementById('resend-submit');
+                        b.disabled = true;
+                        b.classList.add('opacity-50', 'pointer-events-none');
+                        document.getElementById('resend-submit-text').textContent = '<%= t('common.loading') %>';
+                        document.getElementById('resend-submit-icon').textContent = 'sync';
+                        document.getElementById('resend-submit-icon').classList.add('animate-spin');
+                    });
+                </script>
+            </form>
+
+            <div class="pt-4 text-center">
+                <p class="font-body-md text-body-md text-on-surface-variant">
+                    <a href="/login" class="text-primary font-bold hover:underline inline-flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                        <%= t('auth.signInLink') %>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include("partials/footer") %>

@@ -1,62 +1,13 @@
 <%- include("partials/header") %>
 
-<div class="card">
-  <h2>Create New Bot</h2>
-  <p class="text-muted">Define your AI agent persona and service</p>
-  
-  <form action="/bots" method="post" enctype="multipart/form-data">
-    <h3 class="section-title">Persona</h3>
-    
-    <div class="form-group">
-      <label class="form-label">Persona Name</label>
-      <input type="text" name="personaName" class="form-input" required placeholder="e.g., friendly assistant" />
-    </div>
-    
-    <div class="form-group">
-      <label class="form-label">Profession</label>
-      <input type="text" name="personaProfession" class="form-input" required placeholder="e.g., customer support" />
-    </div>
-    
-    <div class="form-group">
-      <label class="form-label">Description</label>
-      <textarea name="personaDescription" class="form-input" rows="3" placeholder="Brief description of the persona"></textarea>
-    </div>
-    
-    <h3 class="section-title">Service</h3>
-    
-    <div class="form-group">
-      <label class="form-label">Service Name</label>
-      <input type="text" name="serviceName" class="form-input" required placeholder="e.g., My Chatbot" />
-    </div>
-    
-    <div class="form-group">
-      <label class="form-label">Service Description</label>
-      <textarea name="serviceDescription" class="form-input" rows="2" placeholder="What does this service do?"></textarea>
-    </div>
-    
-    <h3 class="section-title">AI Configuration</h3>
-    
-    <div class="form-group">
-      <label class="form-label">System Prompt</label>
-      <textarea name="prompt" class="form-input" rows="5" placeholder="Instructions for the AI agent..."></textarea>
-    </div>
-    
-    <div class="form-group">
-      <label class="form-label">RAG URLs (one per line)</label>
-      <textarea name="ragUrls" class="form-input" rows="3" placeholder="https://..."></textarea>
-    </div>
-    
-    <div class="form-group">
-      <label class="form-label">MCP Servers</label>
-      <div class="checkbox-group">
-        <label><input type="checkbox" name="mcpServers" value="github" /> GitHub</label>
-        <label><input type="checkbox" name="mcpServers" value="weather" /> Weather</label>
-        <label><input type="checkbox" name="mcpServers" value="wikipedia" /> Wikipedia</label>
-      </div>
-    </div>
-    
-    <button type="submit" class="btn btn-primary">Create Bot</button>
-  </form>
-</div>
+<%- include("_bot-form", {
+  pageTitle: t('form.createTitle'),
+  pageSubtitle: t('form.createSubtitle'),
+  formAction: "/bots",
+  cancelUrl: "/bots",
+  submitLabel: t('form.createBot'),
+  isEdit: false,
+  bot: typeof bot !== 'undefined' ? bot : null
+}) %>
 
 <%- include("partials/footer") %>

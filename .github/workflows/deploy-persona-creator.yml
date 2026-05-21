@@ -43,11 +43,17 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
 
+      # 4.5 Set up Kustomize
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Update Image Tag
+        run: |
+          cd persona-ai-agent-creator/k8s
+          kustomize edit set image persona-creator-image=${{ env.IMAGE_NAME }}:${{ github.sha }}
+
       # 5. Deploy to Kubernetes
       - name: Deploy to Kubernetes
         run: |
-          kubectl set image deployment/persona-agent-creator \
-            app=${{ env.IMAGE_NAME }}:${{ github.sha }} \
-            -n team-f
-          kubectl rollout status deployment/persona-agent-creator \
-            -n team-f --timeout=120s
+          kubectl apply -k persona-ai-agent-creator/k8s/ -n team-f
+          kubectl rollout status deployment/persona-creator -n team-f --timeout=120s

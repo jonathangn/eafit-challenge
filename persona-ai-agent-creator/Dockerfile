@@ -1,26 +1,36 @@
 # ──────────────────────────────────────────
 # Stage 1: Builder — compile native modules
 # ──────────────────────────────────────────
-FROM node:22-alpine AS builder
+FROM node:22-slim AS builder
 
 WORKDIR /app
 
 # Build tools needed for better-sqlite3 native bindings
-RUN apk add --no-cache python3 make g++
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g pnpm
-
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+# Using npm instead of pnpm to bypass aggressive build script blocks
+COPY package.json ./
+RUN npm install
 
 # ──────────────────────────────────────────
 # Stage 2: Production — minimal image
 # ──────────────────────────────────────────
-FROM node:22-alpine
+FROM node:22-slim
 
 WORKDIR /app
 
-RUN apk add --no-cache libstdc++
+# Install kubectl so the app can deploy agents to the cluster
+RUN apt-get update && apt-get install -y \
+    curl \
+    ca-certificates \
+    && curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
+    && chmod +x kubectl \
+    && mv kubectl /usr/local/bin/ \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy compiled node_modules from builder
 COPY --from=builder /app/node_modules ./node_modules
@@ -30,7 +40,10 @@ COPY src/ ./src/
 COPY views/ ./views/
 COPY public/ ./public/
 COPY locales/ ./locales/
-COPY package.json ./
+COPY tailwind.config.js postcss.config.js package.json ./
+
+# Build Tailwind CSS
+RUN npx tailwindcss -i public/css/app.css -o public/css/output.css --minify
 
 # Create required runtime directories
 RUN mkdir -p /app/data /app/uploads /app/generated

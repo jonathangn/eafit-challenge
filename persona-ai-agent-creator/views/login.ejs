@@ -1,30 +1,88 @@
 <%- include("partials/header") %>
 
-<div class="card narrow">
-  <div class="text-center mb-4">
-    <h2 style="margin:0;"><%= t('auth.loginTitle') %></h2>
-    <p class="text-muted"><%= t('auth.loginSubtitle').replace('{0}', t('common.aiAgents')) %></p>
-  </div>
-  
-  <% if (typeof error !== 'undefined' && error) { %>
-  <div class="form-error" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid rgba(239, 68, 68, 0.2);"><%= error %></div>
-  <% } %>
-  
-  <form action="/login" method="post">
-    <div class="form-group">
-      <label class="form-label" for="login-email"><%= t('auth.emailLabel') %></label>
-      <input id="login-email" type="email" name="email" class="form-input" required autocomplete="email" placeholder="<%= t('auth.emailPlaceholder') %>" />
+<div class="relative py-20 px-margin-mobile">
+    <!-- Abstract gradient blob -->
+    <div class="absolute top-1/4 -right-1/4 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[100px] pointer-events-none"></div>
+
+    <div class="max-w-md w-full mx-auto relative z-10">
+        <!-- Brand / Welcome -->
+        <div class="text-center mb-10">
+            <h2 class="font-headline-lg-mobile text-headline-lg-mobile mb-2 text-gradient-primary">
+                <%= t('auth.loginTitle') %>
+            </h2>
+            <p class="font-body-md text-body-md text-on-surface-variant">
+                <%= t('auth.loginSubtitle').replace('{0}', t('common.aiAgents')) %>
+            </p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="glass-panel p-8 shadow-2xl">
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="bg-error/10 border border-error/20 text-error p-4 rounded-xl mb-6 text-sm flex gap-3 items-center">
+                    <span class="material-symbols-outlined">error</span>
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="bg-primary/10 border border-primary/20 text-primary p-4 rounded-xl mb-6 text-sm flex gap-3 items-center">
+                    <span class="material-symbols-outlined">check_circle</span>
+                    <%= success %>
+                </div>
+            <% } %>
+
+            <form action="/login" method="post" class="space-y-6">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                
+                <%- include("partials/input", { 
+                    name: "email", 
+                    type: "email", 
+                    icon: "mail", 
+                    label: t('auth.emailLabel'), 
+                    placeholder: t('auth.emailPlaceholder'), 
+                    required: true, 
+                    autocomplete: "email" 
+                }) %>
+
+                <div class="space-y-2">
+                    <label class="label-enhanced" for="login-password"><%= t('auth.passwordLabel') %></label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface">lock</span>
+                        <input
+                            id="login-password"
+                            type="password"
+                            name="password"
+                            class="input-enhanced w-full h-[58px] pl-10 pr-12"
+                            required
+                            autocomplete="current-password"
+                            placeholder="<%= t('auth.passwordPlaceholder') %>"
+                        />
+                        <button type="button" onclick="const i=this.previousElementSibling;const t=i.type==='password'?'text':'password';i.type=t;this.querySelector('.material-symbols-outlined').textContent=t==='password'?'visibility':'visibility_off'" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface hover:text-primary transition-colors p-1" aria-label="Toggle password visibility">
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">visibility</span>
+                        </button>
+                    </div>
+                    <div class="text-right">
+                        <a href="/forgot-password" class="text-xs text-primary font-semibold hover:underline">
+                            <%= t('auth.forgotPasswordLink') %>
+                        </a>
+                    </div>
+                </div>
+
+                <button type="submit" id="login-submit" class="btn-primary btn-base w-full py-3 font-bold shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span id="login-submit-text"><%= t('auth.loginSubmit') %></span>
+                    <span id="login-submit-icon" class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">login</span>
+                </button>
+                <script>document.querySelector('form[action="/login"]')?.addEventListener('submit',function(){const b=document.getElementById('login-submit');b.disabled=true;b.classList.add('opacity-50','pointer-events-none');document.getElementById('login-submit-text').textContent='<%= t('common.loading') %>';document.getElementById('login-submit-icon').textContent='sync';document.getElementById('login-submit-icon').classList.add('animate-spin')})</script>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-outline/10 text-center">
+                <p class="font-body-md text-body-md text-on-surface-variant">
+                    <%= t('auth.noAccount') %> 
+                    <a href="/register" class="text-primary font-bold hover:underline ml-1"><%= t('auth.registerLink') %></a>
+                </p>
+            </div>
+        </div>
     </div>
-    
-    <div class="form-group">
-      <label class="form-label" for="login-password"><%= t('auth.passwordLabel') %></label>
-      <input id="login-password" type="password" name="password" class="form-input" required autocomplete="current-password" placeholder="••••••••" />
-    </div>
-    
-    <button type="submit" class="btn btn-primary w-100"><%= t('auth.loginSubmit') %></button>
-  </form>
-  
-  <p class="text-center text-muted mt-4"><%= t('auth.noAccount') %> <a href="/register"><%= t('auth.registerLink') %></a></p>
 </div>
 
 <%- include("partials/footer") %>

@@ -1,4 +1,4 @@
-# Persona AI Agent Creator (EAFIT Step 3 MVP)
+# Persona Studio (EAFIT Step 3 MVP)
 
 This project implements a full vertical slice for the EAFIT challenge Step 3:
 

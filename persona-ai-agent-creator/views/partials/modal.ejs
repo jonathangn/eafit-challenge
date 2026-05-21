@@ -1,0 +1,46 @@
+<%
+  // Modal Partial - Reusable modal component
+  // Required: id, icon, title, description, cancelText, confirmText
+  // Optional: iconColor (default: "error"), confirmStyle ("error" | "primary", default: "error"), confirmAction (JS string), formAction, formMethod, hasLoader
+  const modalId = id;
+  const modalIcon = icon;
+  const modalIconColor = typeof iconColor !== 'undefined' ? iconColor : 'error';
+  const modalTitle = title;
+  const modalDescription = description;
+  const modalCancelText = cancelText;
+  const modalConfirmText = confirmText;
+  const modalConfirmStyle = typeof confirmStyle !== 'undefined' ? confirmStyle : 'error';
+  const modalConfirmAction = typeof confirmAction !== 'undefined' ? confirmAction : null;
+  const modalFormAction = typeof formAction !== 'undefined' ? formAction : null;
+  const modalFormMethod = typeof formMethod !== 'undefined' ? formMethod : 'post';
+  const modalHasLoader = typeof hasLoader !== 'undefined' ? hasLoader : false;
+%>
+
+<div id="<%= modalId %>" class="fixed inset-0 z-[200] flex items-center justify-center p-margin-mobile hidden">
+    <div class="absolute inset-0 bg-background/80 backdrop-blur-md"></div>
+    <div class="glass-modal bg-surface-container rounded-3xl p-10 max-w-sm w-full text-center relative z-10 space-y-6">
+        <div class="w-20 h-20 bg-<%= modalIconColor %>/10 rounded-full flex items-center justify-center mx-auto">
+            <span class="material-symbols-outlined text-4xl text-<%= modalIconColor %> <%= modalHasLoader ? 'animate-bounce' : '' %>"><%= modalIcon %></span>
+        </div>
+        <div class="space-y-2">
+            <h3 class="font-headline-md text-headline-md text-on-surface"><%= modalTitle %></h3>
+            <p class="font-body-md text-body-md text-on-surface-variant"><%= modalDescription %></p>
+        </div>
+        <% if (modalHasLoader) { %>
+            <div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                <div class="h-full bg-<%= modalIconColor %> animate-[shimmer_2s_infinite]"></div>
+            </div>
+        <% } %>
+        <div class="flex gap-3 pt-2">
+            <button onclick="document.getElementById('<%= modalId %>').classList.add('hidden')" class="btn-outline btn-base flex-1"><%= modalCancelText %></button>
+            <% if (modalFormAction) { %>
+                <form action="<%= modalFormAction %>" method="<%= modalFormMethod %>" class="flex-1 m-0">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <button type="submit" class="btn-<%= modalConfirmStyle %> btn-base w-full"><%= modalConfirmText %></button>
+                </form>
+            <% } else if (modalConfirmAction) { %>
+                <button onclick="<%= modalConfirmAction %>" class="btn-<%= modalConfirmStyle %> btn-base flex-1"><%= modalConfirmText %></button>
+            <% } %>
+        </div>
+    </div>
+</div>

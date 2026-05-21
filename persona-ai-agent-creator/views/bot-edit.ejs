@@ -1,62 +1,13 @@
 <%- include("partials/header") %>
 
-<div class="card">
-  <h2>Edit Bot: <%= bot.service_name %></h2>
-  
-  <form action="/bots/<%= bot.id %>" method="post" enctype="multipart/form-data">
-    <h3 class="section-title">Persona</h3>
-    
-    <div class="form-group">
-      <label class="form-label">Persona Name</label>
-      <input type="text" name="personaName" class="form-input" value="<%= bot.persona_name %>" required />
-    </div>
-    
-    <div class="form-group">
-      <label class="form-label">Profession</label>
-      <input type="text" name="personaProfession" class="form-input" value="<%= bot.persona_profession %>" required />
-    </div>
-    
-    <div class="form-group">
-      <label class="form-label">Description</label>
-      <textarea name="personaDescription" class="form-input" rows="3"><%= bot.persona_description %></textarea>
-    </div>
-    
-    <h3 class="section-title">Service</h3>
-    
-    <div class="form-group">
-      <label class="form-label">Service Name</label>
-      <input type="text" name="serviceName" class="form-input" value="<%= bot.service_name %>" required />
-    </div>
-    
-    <div class="form-group">
-      <label class="form-label">Service Description</label>
-      <textarea name="serviceDescription" class="form-input" rows="2"><%= bot.service_description %></textarea>
-    </div>
-    
-    <h3 class="section-title">AI Configuration</h3>
-    
-    <div class="form-group">
-      <label class="form-label">System Prompt</label>
-      <textarea name="prompt" class="form-input" rows="5"><%= bot.prompt %></textarea>
-    </div>
-    
-    <div class="form-group">
-      <label class="form-label">RAG URLs (one per line)</label>
-      <textarea name="ragUrls" class="form-input" rows="3"><%= bot.rag_urls?.join("\n") %></textarea>
-    </div>
-    
-    <div class="form-group">
-      <label class="form-label">MCP Servers</label>
-      <div class="checkbox-group">
-        <label><input type="checkbox" name="mcpServers" value="github" <%= bot.mcp_servers?.includes('github') ? 'checked' : '' %> /> GitHub</label>
-        <label><input type="checkbox" name="mcpServers" value="weather" <%= bot.mcp_servers?.includes('weather') ? 'checked' : '' %> /> Weather</label>
-        <label><input type="checkbox" name="mcpServers" value="wikipedia" <%= bot.mcp_servers?.includes('wikipedia') ? 'checked' : '' %> /> Wikipedia</label>
-      </div>
-    </div>
-    
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a href="/bots/<%= bot.id %>" class="btn btn-secondary">Cancel</a>
-  </form>
-</div>
+<%- include("_bot-form", {
+  pageTitle: t('form.editTitle') + ": " + bot.service_name,
+  pageSubtitle: t('form.editSubtitle'),
+  formAction: "/bots/" + bot.id,
+  cancelUrl: "/bots/" + bot.id,
+  submitLabel: t('form.saveChanges'),
+  isEdit: true,
+  bot: bot
+}) %>
 
 <%- include("partials/footer") %>

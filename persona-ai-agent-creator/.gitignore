@@ -12,6 +12,10 @@
 
 # testing
 /coverage
+/data/test-*.sqlite
+/data/test-*.sqlite-wal
+/data/test-*.sqlite-shm
+/generated-test/
 
 # next.js
 /.next/
@@ -19,6 +23,18 @@
 
 # production
 /build
+
+# generated build artifacts (regenerated from DB on publish)
+/generated
+
+# Tailwind CSS output (generated from app.css via build:css)
+public/css/output.css
+
+# user uploaded files
+/uploads
+
+# sqlite databases (environment-specific data)
+/data
 
 # misc
 .DS_Store

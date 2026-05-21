@@ -1,120 +1,217 @@
 <%- include("partials/header") %>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-<!-- Toast Notification -->
-<div id="toast" class="toast hidden" role="alert" aria-live="polite"></div>
+<%- include("partials/toast") %>
 
-<div class="card">
-  <div class="card-header">
-    <h2><%= bot.service_name %></h2>
-    <span class="badge badge-<%= bot.publish_status %>"><%= bot.publish_status %></span>
-  </div>
-  
-  <div class="bot-details">
-    <h3>Persona</h3>
-    <p><strong>Name:</strong> <%= bot.persona_name %></p>
-    <p><strong>Profession:</strong> <%= bot.persona_profession %></p>
-    <p><strong>Description:</strong> <%= bot.persona_description %></p>
-    
-    <h3>Service</h3>
-    <p><strong>Name:</strong> <%= bot.service_name %></p>
-    <p><strong>Description:</strong> <%= bot.service_description %></p>
-    <p><strong>Slug:</strong> <%= bot.slug %></p>
-    
-    <h3>AI Configuration</h3>
-    <p><strong>Prompt:</strong> <%= bot.prompt %></p>
-    <p><strong>RAG URLs:</strong> <%= bot.rag_urls?.join(", ") || "None" %></p>
-    <p><strong>Premium Integrations:</strong> <%= (bot.mcp_servers?.length ? bot.mcp_servers.join(", ") : "None (default free tools active)") %></p>
-    
+<div class="px-margin-mobile py-stack-md max-w-2xl mx-auto space-y-stack-md pb-24">
+    <!-- Header Card -->
+    <div class="glass-panel rounded-3xl overflow-hidden shadow-2xl">
+        <div class="h-32 bg-gradient-primary relative">
+            <div class="absolute inset-0 bg-black/20"></div>
+            <div class="absolute -bottom-10 left-8">
+                <div class="w-24 h-24 rounded-2xl bg-surface-container-highest border-4 border-background shadow-xl overflow-hidden">
+                    <% if (bot.photo_url) { %>
+                        <img src="<%= bot.photo_url %>" alt="<%= bot.service_name %>" class="w-full h-full object-cover" loading="lazy" />
+                    <% } else { %>
+                        <div class="w-full h-full flex items-center justify-center bg-surface-container-highest">
+                            <span class="material-symbols-outlined text-primary text-4xl">smart_toy</span>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        
+        <div class="pt-12 pb-8 px-8 space-y-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface"><%= bot.service_name %></h1>
+                    <p class="font-body-md text-body-md text-on-surface-variant"><%= bot.persona_profession %></p>
+                </div>
+                <div class="flex flex-col items-end gap-2">
+                    <span class="px-4 py-1.5 rounded-full font-label-sm text-label-sm uppercase tracking-widest font-bold <%= (bot.publish_status === 'published' || bot.publish_status === 'applied') ? 'bg-[#10b981]/10 text-[#10b981] border border-[#10b981]/20' : 'bg-on-surface-variant/10 text-on-surface-variant border border-on-surface-variant/20' %>">
+                        <%= bot.publish_status %>
+                    </span>
+                    <% if (bot.public_url) { %>
+                        <a href="<%= bot.public_url %>" target="_blank" class="flex items-center gap-1.5 text-primary font-label-sm text-label-sm hover:underline">
+                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                            <%= t('detail.liveLink') %>
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <a href="/bots/<%= bot.id %>/edit" class="btn-outline btn-base">
+                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                    <%= t('detail.editPersona') %>
+                </a>
+                <% if (bot.publish_status === "draft" || bot.publish_status === "pending_apply") { %>
+                    <form action="/bots/<%= bot.id %>/publish" method="post" onsubmit="showLoader()">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                        <button type="submit" class="btn-primary btn-base w-full font-bold shadow-xl">
+                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+                            <%= t('detail.goLive') %>
+                        </button>
+                    </form>
+                <% } else { %>
+                    <form action="/bots/<%= bot.id %>/unpublish" method="post">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                        <button type="submit" class="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-error/10 border border-error/20 text-error font-label-md text-label-md font-bold">
+                            <span class="material-symbols-outlined text-[18px]">pause_circle</span>
+                            <%= t('detail.unpublish') %>
+                        </button>
+                    </form>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR / Share Card -->
     <% if (bot.public_url) { %>
-    <div class="qr-container">
-      <div style="text-align:center;">
-        <h3 style="margin-top:0;">Your Agent is Live! ✨</h3>
-        <p class="text-muted mb-4">Scan this code or share the link below to let clients chat with your agent.</p>
-        <div id="qrcode" style="display:inline-block; margin-bottom: 1rem;"></div>
-        <div>
-          <input type="text" value="<%= bot.public_url %>" class="form-input" readonly style="width:300px; text-align:center;" />
+        <div class="glass-panel rounded-3xl p-8 space-y-6 text-center">
+            <h3 class="font-headline-md text-headline-md text-on-surface"><%= t('detail.shareTitle') %></h3>
+            <div class="inline-block p-4 bg-white rounded-3xl shadow-inner mb-4">
+                <div id="qrcode"></div>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 bg-surface-container-lowest border border-outline/30 rounded-xl p-1 px-4">
+                    <span class="material-symbols-outlined text-on-surface-variant text-sm">link</span>
+                    <input type="text" value="<%= bot.public_url %>" class="flex-1 bg-transparent border-none text-on-surface font-body-md text-body-md py-3 focus:ring-0 outline-none" readonly />
+                    <button onclick="copyToClipboard('<%= bot.public_url %>')" class="p-2 hover:text-primary transition-colors">
+                        <span class="material-symbols-outlined">content_copy</span>
+                    </button>
+                </div>
+            </div>
         </div>
         <script>
-          new QRCode(document.getElementById("qrcode"), {
-            text: "<%= bot.public_url %>",
-            width: 200,
-            height: 200,
-            colorDark : "#4F46E5",
-            colorLight : "#ffffff"
-          });
+            new QRCode(document.getElementById("qrcode"), {
+                text: "<%= bot.public_url %>",
+                width: 180,
+                height: 180,
+                colorDark : "#3c0091",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text);
+                const msgEl = document.getElementById('toast-message');
+                const toastEl = document.getElementById('toast');
+                msgEl.textContent = '<%= t('common.toastLinkCopied') %>';
+                toastEl.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+                setTimeout(() => toastEl.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none'), 3000);
+            }
         </script>
-      </div>
+    <% } %>
+
+    <!-- Details Tabs -->
+    <div class="glass-panel rounded-3xl p-8 space-y-8">
+        <section class="space-y-4">
+            <div class="flex items-center gap-2 text-primary">
+                <span class="material-symbols-outlined text-sm">person</span>
+                <h3 class="font-label-md text-label-md uppercase tracking-widest font-bold"><%= t('detail.identityTitle') %></h3>
+            </div>
+            <div class="space-y-2">
+                <p class="font-body-md text-body-md text-on-surface leading-relaxed">
+                    <span class="text-on-surface-variant font-bold"><%= t('detail.personaLabel') %></span> <%= bot.persona_name %>
+                </p>
+                <p class="font-body-md text-body-md text-on-surface leading-relaxed">
+                    <span class="text-on-surface-variant font-bold"><%= t('detail.bioLabel') %></span> <%= bot.persona_description %>
+                </p>
+            </div>
+        </section>
+
+        <section class="space-y-4">
+            <div class="flex items-center gap-2 text-primary">
+                <span class="material-symbols-outlined text-sm">bolt</span>
+                <h3 class="font-label-md text-label-md uppercase tracking-widest font-bold"><%= t('detail.supersTitle') %></h3>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <% if (bot.mcp_servers?.length) { %>
+                    <% bot.mcp_servers.forEach(mcpId => { %>
+                        <span class="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-label-sm text-label-sm font-bold">
+                            <%= mcpId %>
+                        </span>
+                    <% }) %>
+                <% } else { %>
+                    <p class="font-body-md text-body-md text-on-surface-variant italic"><%= t('detail.noIntegrations') %></p>
+                <% } %>
+            </div>
+        </section>
+
+        <% if (locals.trustChainError) { %>
+            <div class="p-6 bg-error/10 border border-error/20 rounded-2xl space-y-3">
+                <div class="flex items-center gap-2 text-error">
+                    <span class="material-symbols-outlined">warning</span>
+                    <h3 class="font-label-md text-label-md font-bold"><%= t('detail.trustChainError') %></h3>
+                </div>
+                <p class="font-body-md text-body-md text-error/80 text-sm font-mono break-all bg-black/20 p-4 rounded-xl">
+                    <%= trustChainError.error %>
+                </p>
+                <p class="font-label-sm text-label-sm text-error/60">
+                    <%= new Date(trustChainError.time).toLocaleString() %>
+                </p>
+            </div>
+        <% } %>
     </div>
-    <% } %>
-  </div>
-  
-  <div class="card-actions">
-    <a href="/bots/<%= bot.id %>/edit" class="btn btn-secondary">✏️ Edit Settings</a>
-    <% if (bot.publish_status === "draft" || bot.publish_status === "pending_apply") { %>
-    <form action="/bots/<%= bot.id %>/publish" method="post" style="display:inline;" onsubmit="showLoader()">
-      <button type="submit" class="btn btn-primary">🚀 Publish to the World</button>
-    </form>
-    <% } else { %>
-    <form action="/bots/<%= bot.id %>/unpublish" method="post" style="display:inline;">
-      <button type="submit" class="btn btn-secondary" style="color: #ef4444; border-color: #fca5a5;">🛑 Unpublish</button>
-    </form>
-    <% } %>
-  </div>
+
+    <!-- Danger Zone -->
+    <div class="pt-10">
+        <button type="button" onclick="document.getElementById('deleteModal').classList.remove('hidden')" class="w-full flex items-center justify-center gap-2 py-4 rounded-2xl border border-error/20 text-error/60 hover:text-error hover:bg-error/10 transition-all font-label-md text-label-md">
+            <span class="material-symbols-outlined text-[18px]">delete</span>
+            <%= t('detail.deletePermanently') %>
+        </button>
+    </div>
 </div>
 
-<div id="publishModal" class="modal-backdrop hidden">
-  <div class="card" style="text-align: center; max-width: 400px; margin: 0 auto;">
-    <div class="loader mb-4"></div>
-    <h3 style="margin-top: 0;">Deploying your AI Agent...</h3>
-    <p class="text-muted">This may take a few moments. We are packing up your agent's skills and launching them to the Verana Network!</p>
-  </div>
-</div>
+<%- include("partials/modal", {
+    id: "deleteModal",
+    icon: "delete",
+    iconColor: "error",
+    title: t('detail.deleteConfirmTitle'),
+    description: t('detail.deleteConfirmDesc'),
+    cancelText: t('detail.cancel'),
+    confirmText: t('detail.deleteConfirmButton'),
+    confirmStyle: "error",
+    formAction: "/bots/" + bot.id + "/delete"
+}) %>
 
-<style>
-  .toast {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    padding: 1rem 1.5rem;
-    border-radius: 0.75rem;
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: white;
-    z-index: 9999;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transform: translateY(0);
-    opacity: 1;
-  }
-  .toast.hidden { transform: translateY(80px); opacity: 0; pointer-events: none; }
-  .toast.success { background: linear-gradient(135deg, #4F46E5, #7C3AED); }
-  .toast.info { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
-</style>
+<%- include("partials/modal", {
+    id: "publishModal",
+    icon: "rocket_launch",
+    iconColor: "primary",
+    title: t('detail.deployingTitle'),
+    description: t('detail.deployingDesc'),
+    cancelText: "",
+    confirmText: "",
+    hasLoader: true
+}) %>
 
 <script>
-  function showLoader() {
-    document.getElementById('publishModal').classList.remove('hidden');
-  }
-
-  // Show toast based on URL query param
-  (function() {
-    const params = new URLSearchParams(window.location.search);
-    const toastKey = params.get('toast');
-    const toastEl = document.getElementById('toast');
-    const messages = {
-      published: { text: '🚀 Agent published successfully!', cls: 'success' },
-      unpublished: { text: '🛑 Agent unpublished.', cls: 'info' }
-    };
-    if (toastKey && messages[toastKey]) {
-      toastEl.textContent = messages[toastKey].text;
-      toastEl.classList.add(messages[toastKey].cls);
-      toastEl.classList.remove('hidden');
-      // Clean the URL without reloading the page
-      window.history.replaceState({}, '', window.location.pathname);
-      setTimeout(() => toastEl.classList.add('hidden'), 3500);
+    function showLoader() {
+        document.getElementById('publishModal').classList.remove('hidden');
     }
-  })();
+
+    (function() {
+        const params = new URLSearchParams(window.location.search);
+        const toastKey = params.get('toast');
+        const toastEl = document.getElementById('toast');
+        const msgEl = document.getElementById('toast-message');
+        const iconEl = document.getElementById('toast-icon');
+        
+        const messages = {
+            published: { text: '<%= t('common.toastPublished') %>', icon: 'rocket_launch' },
+            unpublished: { text: '<%= t('common.toastUnpublished') %>', icon: 'pause_circle' },
+            error: { text: '<%= t('common.toastDeployError') %>', icon: 'error' }
+        };
+        
+        if (toastKey && messages[toastKey]) {
+            msgEl.textContent = messages[toastKey].text;
+            iconEl.textContent = messages[toastKey].icon;
+            toastEl.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            window.history.replaceState({}, '', window.location.pathname);
+            setTimeout(() => toastEl.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none'), 4000);
+        }
+    })();
 </script>
 
 <%- include("partials/footer") %>

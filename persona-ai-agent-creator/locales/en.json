@@ -1,8 +1,9 @@
 {
   "common": {
-    "appTitle": "Persona AI Agent Creator",
-    "logoText": "Persona AI",
-    "title": "Persona AI Agent Creator",
+    "appTitle": "Persona Studio",
+    "logoText": "Persona Studio",
+    "title": "Persona Studio",
+    "description": "Description",
     "languageLabel": "Language",
     "languageEnglish": "English",
     "languageSpanish": "Spanish",
@@ -13,16 +14,25 @@
     "back": "Back",
     "continue": "Continue",
     "name": "Name",
-    "description": "Description",
     "open": "Open",
     "edit": "Edit",
+    "view": "View",
     "manage": "Manage",
-    "footer": "Persona AI Agent Creator \u2014 Built for the EAFIT Challenge",
+    "footer": "Persona Studio — Built for the EAFIT Challenge",
     "id": "ID",
-    "aiAgents": "AI agents"
+    "aiAgents": "AI agents",
+    "toastLinkCopied": "Link copied to clipboard!",
+    "toastPublished": "Agent published successfully!",
+    "toastUnpublished": "Agent unpublished.",
+    "toastDeployError": "Deployment failed.",
+    "toastDeleted": "Agent removed successfully.",
+    "toastLive": "Agent is now LIVE!",
+    "toastError": "An error occurred.",
+    "loading": "Processing..."
   },
   "nav": {
     "myBots": "My Bots",
+    "myAgents": "My Agents",
     "login": "Login",
     "register": "Register",
     "logout": "Logout"
@@ -45,11 +55,32 @@
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
     "registerLink": "Create one",
-    "signInLink": "Sign in"
+    "signInLink": "Sign in",
+    "forgotPasswordLink": "Forgot password?",
+    "forgotPasswordTitle": "Recover Password",
+    "forgotPasswordSubtitle": "Enter your email to receive a password reset link.",
+    "forgotPasswordSubmit": "Send Reset Link",
+    "resetPasswordTitle": "Reset Password",
+    "resetPasswordSubtitle": "Choose a secure new password for your account.",
+    "resetPasswordSubmit": "Update Password",
+    "verifyPendingTitle": "Verify Your Email",
+    "verifyPendingSubtitle": "We've sent a verification link to your email address.",
+    "verifyPendingText": "Since this is a simulated local setup, the verification link has also been printed directly to your server terminal logs.",
+    "resendBtn": "Resend Link",
+    "verifySuccess": "Your account has been successfully verified! You can now access your dashboard.",
+    "verifyLinkReady": "Email service unavailable. Use the link below to verify your account:",
+    "verifyAccountBtn": "Verify my account →",
+    "resetLinkBtn": "Reset my password →"
   },
   "validation": {
-    "registerRequired": "Email and password are required.",
+    "registerRequired": "Email, name and password are required.",
+    "invalidEmail": "Please enter a valid email address.",
     "registerExists": "Email is already registered.",
+    "emailNotVerified": "Your email is not verified yet. Please click the verification link in your logs/email.",
+    "invalidResetToken": "The password reset link is invalid or has expired.",
+    "resetTokenSuccess": "Password updated successfully! You can now sign in.",
+    "forgotSent": "A password reset link has been sent to your email (and logged to the server logs).",
+    "verificationSent": "A new verification link has been sent.",
     "registerFail": "Could not create account.",
     "loginInvalid": "Invalid credentials.",
     "botNotFound": "Bot not found",
@@ -63,12 +94,56 @@
     "empty": "No bots yet. Start by creating your first assistant.",
     "manage": "Manage",
     "openLive": "Open Live Bot",
-    "lastUpdated": "Last updated"
+    "lastUpdated": "Last updated",
+    "deleteConfirm": "Delete this agent?"
   },
   "form": {
     "createBot": "Create bot",
     "saveChanges": "Save changes",
+    "createTitle": "Create New AI Agent",
+    "createSubtitle": "Design a unique intelligent persona for the Verana Network.",
+    "editTitle": "Edit Agent",
+    "editSubtitle": "Refine your agent’s personality and update its capabilities.",
     "intro": "Follow these simple steps. You can keep it basic now and refine later.",
+    "stepOf": "Step {0} of {1}",
+    "step1Title": "Persona Identity",
+    "step2Title": "Skills & Superpowers",
+    "step3Title": "Service Details",
+    "step1Desc": "Define the name, role, and appearance of your digital persona.",
+    "step2Desc": "Select the tools and integrations your persona can access.",
+    "step3Desc": "How will this agent appear in the public directory?",
+    "whoIsAgent": "Who is your Agent?",
+    "equipAgent": "Equip your Agent",
+    "serviceSettings": "Service Settings",
+    "personaNameLabel": "Persona Name",
+    "personaNamePlaceholder": "Assistant",
+    "professionLabel": "Profession / Role",
+    "professionPlaceholder": "Senior Architect",
+    "bioLabel": "Personality Bio",
+    "bioPlaceholder": "A brief description of who they are and how they speak...",
+    "photoUrlLabel": "Avatar Photo URL",
+    "photoUrlPlaceholder": "https://...",
+    "photoUploaded": "Photo uploaded",
+    "photoChangeUrl": "change",
+    "uploadPhotoLabel": "Or Upload Photo",
+    "chooseImage": "Choose Image",
+    "knowledgeTitle": "Knowledge Base (RAG)",
+    "knowledgePlaceholder": "https://example.com/about\nhttps://example.com/docs",
+    "knowledgeHint": "Paste URLs to give your agent context from your website.",
+    "serviceNameLabel": "Public Service Name",
+    "serviceNamePlaceholder": "Premium Support",
+    "serviceTaglineLabel": "Service Tagline",
+    "serviceTaglinePlaceholder": "Expert advice, 24/7.",
+    "ageLabel": "Minimum Age Required",
+    "aiPersonalityTitle": "AI Personality (System Prompt)",
+    "aiPersonalityPlaceholder": "You are a helpful, professional assistant. Talk like a friendly human...",
+    "aiPersonalityHint": "Detailed instructions for the AI’s behavior and tone.",
+    "backButton": "Back",
+    "continueButton": "Continue",
+    "templateProfessional": "Professional",
+    "templateCreative": "Creative",
+    "templateResearcher": "Researcher",
+    "noToolsSelected": "No tools selected",
     "step1": "Persona",
     "step2": "Service",
     "step3": "Behavior",
@@ -92,9 +167,12 @@
     "promptHint": "Tip: Start with \"Be friendly, clear, and practical. Ask follow-up questions when needed.\"",
     "extrasTitle": "Extra capabilities (optional but useful)",
     "extrasSubtitle": "Choose what your assistant can access.",
-    "knowledgeTitle": "Knowledge sources (optional)",
+    "knowledgeTitleOriginal": "Knowledge sources (optional)",
     "knowledgeLabel": "Add one URL per line",
-    "knowledgeHint": "Example: your FAQ page, public docs, service policies."
+    "knowledgeHintOriginal": "Example: your FAQ page, public docs, service policies.",
+    "restoreMessage": "Resuming where you left off",
+    "invalidFileType": "Please select an image file (JPEG, PNG, WebP).",
+    "invalidFileSize": "File too large. Maximum size is 5 MB."
   },
   "bot": {
     "myBots": "My AI Bots",
@@ -118,11 +196,16 @@
     "duration": "Duration",
     "publish": "Publish",
     "published": "Published",
+    "draft": "Off",
     "status": "Status"
   },
   "detail": {
     "subtitle": "Manage this assistant and publish it for Hologram users.",
     "editSetup": "Edit Setup",
+    "editPersona": "Edit Persona",
+    "liveLink": "Live Link",
+    "goLive": "Go Live",
+    "unpublish": "Unpublish",
     "serviceCategory": "Service Category",
     "extraCapabilities": "Extra Capabilities",
     "publicUrl": "Public URL",
@@ -132,32 +215,51 @@
     "publishOutcome3": "You can unpublish at any time from this page.",
     "knowledgeSources": "Knowledge Sources",
     "noKnowledge": "No knowledge sources configured.",
+    "shareTitle": "Share your Agent",
+    "identityTitle": "Identity & Background",
+    "supersTitle": "Active Superpowers",
+    "noIntegrations": "No premium integrations enabled.",
+    "trustChainError": "Trust Chain Setup Failed",
+    "personaLabel": "Persona:",
+    "bioLabel": "Bio:",
+    "deletePermanently": "Delete Agent Permanently",
+    "deleteConfirm": "Delete this agent permanently?",
+    "deleteConfirmTitle": "Delete this agent?",
+    "deleteConfirmDesc": "This action cannot be undone. The agent and all its data will be permanently removed.",
+    "deleteConfirmButton": "Yes, delete",
+    "cancel": "Cancel",
+    "deployingTitle": "Deploying Agent...",
+    "deployingDesc": "Packing up skills and launching to Verana Network. This usually takes 30-60 seconds.",
     "publish": "Publish",
-    "unpublish": "Unpublish",
     "artifactsTitle": "Deployment Artifacts",
     "artifactsEmpty": "No deployment artifacts generated yet.",
     "activityTitle": "Deployment Activity"
   },
+  "error": {
+    "pageNotFound": "Page not found",
+    "internalError": "Internal server error",
+    "goHome": "Go Home"
+  },
   "mcp": {
-    "github": {
-      "name": "GitHub",
-      "description": "Repo search, issues, pull requests, and file browsing."
+    "memory": {
+      "name": "Persistent Memory",
+      "description": "Give the agent the ability to remember facts across conversations."
     },
     "weather": {
-      "name": "Weather API",
-      "description": "Check weather conditions for service planning."
+      "name": "Weather Forecast",
+      "description": "Look up real-time global weather conditions (Open-Meteo)."
     },
     "wikipedia": {
       "name": "Wikipedia",
-      "description": "Reference public knowledge for broad Q&A."
+      "description": "Search and read Wikipedia to answer factual questions."
     },
-    "google-calendar": {
-      "name": "Google Calendar",
-      "description": "Manage events and calendar"
+    "time": {
+      "name": "Time & Timezones",
+      "description": "Provides local time and timezone conversion."
     },
-    "gmail": {
-      "name": "Gmail",
-      "description": "Send and read emails"
+    "fetch": {
+      "name": "Web Fetcher",
+      "description": "Allows the agent to read content from any public URL."
     }
   }
 }
