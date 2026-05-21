@@ -77,6 +77,14 @@ function buildAgentPack(bot) {
     augmentedPrompt = `You are ${name}, working as a ${role}.\nYou are a helpful assistant.\n\n### Personality Bio\n${bio}\n\n### Communication Style & Guidelines\nAlways align your responses with the following tones:\n${toneInstructions}`;
   }
 
+  // Language constraint
+  const botLanguage = bot.language || 'auto';
+  if (botLanguage === 'es') {
+    augmentedPrompt += '\n\n### Language Constraint\nYou must formulate and write all your responses strictly in Spanish. Even if the user queries you in English or another language, translate your thoughts internally and reply only in natural Spanish.';
+  } else if (botLanguage === 'en') {
+    augmentedPrompt += '\n\n### Language Constraint\nYou must formulate and write all your responses strictly in English. Even if the user queries you in Spanish or another language, translate your thoughts internally and reply only in natural English.';
+  }
+
   // Plain-text rule — Hologram does not render markdown
   augmentedPrompt += '\n\nIMPORTANT: Always respond in plain text. Do NOT use markdown formatting (no **, no #, no bullet hyphens, no backticks, no tables). Write naturally as if speaking, using simple line breaks when needed.';
 
@@ -100,7 +108,7 @@ function buildAgentPack(bot) {
       id:              bot.slug,
       displayName:     bot.persona_name || bot.service_name,
       description:     bot.persona_description || bot.service_description,
-      defaultLanguage: bot.language || 'es',
+      defaultLanguage: (bot.language && bot.language !== 'auto') ? bot.language : 'es',
       tags: ['eafit', 'persona', 'agent'],
     },
     languages: {

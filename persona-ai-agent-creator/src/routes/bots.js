@@ -40,7 +40,7 @@ router.get('/new', (_req, res) => res.render('bot-new', { mcpCatalog }));
 
 router.post('/', upload.single('photo'), (req, res) => {
   const { serviceName, serviceDescription, personaName, personaProfession,
-          personaDescription, prompt, ragUrls, mcpServers, photoUrl, minimumAge, tones } = req.body;
+          personaDescription, prompt, ragUrls, mcpServers, photoUrl, minimumAge, tones, language } = req.body;
 
   const serviceNameStr = typeof serviceName === 'string' ? serviceName.trim() : '';
   const personaNameStr = typeof personaName === 'string' ? personaName.trim() : '';
@@ -69,7 +69,8 @@ router.post('/', upload.single('photo'), (req, res) => {
         mcp_servers: mcpServers ? (Array.isArray(mcpServers) ? mcpServers : [mcpServers]) : [],
         photo_url: finalPhotoUrl,
         minimum_age: minimumAge ? parseInt(minimumAge, 10) : 1,
-        tones: tonesArr
+        tones: tonesArr,
+        language: language || 'auto'
       }
     });
   }
@@ -89,6 +90,7 @@ router.post('/', upload.single('photo'), (req, res) => {
     rag_urls:    ragUrls    ? ragUrls.split('\n').filter(Boolean) : [],
     mcp_servers: mcpServers ? (Array.isArray(mcpServers) ? mcpServers : [mcpServers]) : [],
     tones:       tonesArr,
+    language:    language || 'auto',
     public_url:     '',
     publish_status: 'draft',
     photo_url:           finalPhotoUrl,
@@ -144,7 +146,7 @@ router.post('/:id', upload.single('photo'), (req, res) => {
   if (!bot) return res.status(404).render('error', { message: 'Bot not found', status: 404 });
 
   const { serviceName, serviceDescription, personaName, personaProfession,
-          personaDescription, prompt, ragUrls, mcpServers, photoUrl, minimumAge, tones } = req.body;
+          personaDescription, prompt, ragUrls, mcpServers, photoUrl, minimumAge, tones, language } = req.body;
 
   const serviceNameStr = typeof serviceName === 'string' ? serviceName.trim() : '';
   const personaNameStr = typeof personaName === 'string' ? personaName.trim() : '';
@@ -174,7 +176,8 @@ router.post('/:id', upload.single('photo'), (req, res) => {
         mcp_servers: mcpServers ? (Array.isArray(mcpServers) ? mcpServers : [mcpServers]) : [],
         photo_url: finalPhotoUrl,
         minimum_age: minimumAge ? parseInt(minimumAge, 10) : 1,
-        tones: tonesArr
+        tones: tonesArr,
+        language: language || 'auto'
       }
     });
   }
@@ -189,6 +192,7 @@ router.post('/:id', upload.single('photo'), (req, res) => {
     rag_urls:    ragUrls    ? ragUrls.split('\n').filter(Boolean) : [],
     mcp_servers: mcpServers ? (Array.isArray(mcpServers) ? mcpServers : [mcpServers]) : [],
     tones:       tonesArr,
+    language:    language || 'auto',
     photo_url:   finalPhotoUrl,
     minimum_age: minimumAge ? parseInt(minimumAge, 10) : 1,
     updated_at: new Date().toISOString(),

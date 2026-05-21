@@ -261,4 +261,42 @@
     cursor: not-allowed;
     pointer-events: none;
   }
+
+  /* Progressive Stepper Stuck Outward Fillets */
+  .stepper-fillet-left,
+  .stepper-fillet-right {
+    position: absolute;
+    top: -1px; /* Overlap header bottom by 1px to resolve sub-pixel layout gaps */
+    margin-top: 0 !important; /* Neutralize Tailwind space-y-base sibling margin layout shift */
+    height: 17px; /* 16px radius + 1px overlap */
+    width: 16px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+  }
+
+  .stepper-fillet-left {
+    left: -15.5px; /* Overlap stepper left border by 0.5px */
+    transform-origin: top left;
+    mask-image: radial-gradient(circle at 0% 100%, transparent 16px, black 16px);
+    -webkit-mask-image: radial-gradient(circle at 0% 100%, transparent 16px, black 16px);
+  }
+
+  .stepper-fillet-right {
+    right: -15.5px; /* Overlap stepper right border by 0.5px */
+    transform-origin: top right;
+    mask-image: radial-gradient(circle at 100% 100%, transparent 16px, black 16px);
+    -webkit-mask-image: radial-gradient(circle at 100% 100%, transparent 16px, black 16px);
+  }
+
+  #stepper-card.is-stuck .stepper-fillet-left,
+  #stepper-card.is-stuck .stepper-fillet-right {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

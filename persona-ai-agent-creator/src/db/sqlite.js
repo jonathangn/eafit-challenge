@@ -24,6 +24,7 @@ try { sqlite.exec(`ALTER TABLE users ADD COLUMN is_verified INTEGER DEFAULT 0`);
 try { sqlite.exec(`ALTER TABLE users ADD COLUMN verification_token TEXT`); } catch {};
 try { sqlite.exec(`ALTER TABLE users RENAME COLUMN password_hash TO password`); } catch {};
 try { sqlite.exec(`ALTER TABLE users ADD COLUMN name TEXT`); } catch {};
+try { sqlite.exec(`ALTER TABLE bots ADD COLUMN language TEXT DEFAULT 'auto'`); } catch {};
 
 sqlite.exec(`
   CREATE TABLE IF NOT EXISTS users (
@@ -56,6 +57,7 @@ sqlite.exec(`
     theme_color         TEXT,
     minimum_age         INTEGER DEFAULT 1,
     tones               TEXT,
+    language            TEXT DEFAULT 'auto',
     created_at          TEXT,
     updated_at          TEXT
   );

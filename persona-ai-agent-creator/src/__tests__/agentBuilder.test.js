@@ -203,6 +203,32 @@ describe('buildAgentPack', () => {
       const sysPrompt = agentPack.languages.en.systemPrompt;
       expect(sysPrompt).not.toContain('Agent Tools');
     });
+
+    it('handles Spanish language constraint correctly', () => {
+      const bot = { ...MIN_BOT, language: 'es' };
+      const { agentPack } = buildAgentPack(bot);
+      const sysPrompt = agentPack.languages.en.systemPrompt;
+      expect(sysPrompt).toContain('### Language Constraint');
+      expect(sysPrompt).toContain('strictly in Spanish');
+      expect(agentPack.metadata.defaultLanguage).toBe('es');
+    });
+
+    it('handles English language constraint correctly', () => {
+      const bot = { ...MIN_BOT, language: 'en' };
+      const { agentPack } = buildAgentPack(bot);
+      const sysPrompt = agentPack.languages.en.systemPrompt;
+      expect(sysPrompt).toContain('### Language Constraint');
+      expect(sysPrompt).toContain('strictly in English');
+      expect(agentPack.metadata.defaultLanguage).toBe('en');
+    });
+
+    it('handles auto/empty language constraint correctly', () => {
+      const bot = { ...MIN_BOT, language: 'auto' };
+      const { agentPack } = buildAgentPack(bot);
+      const sysPrompt = agentPack.languages.en.systemPrompt;
+      expect(sysPrompt).not.toContain('### Language Constraint');
+      expect(agentPack.metadata.defaultLanguage).toBe('es');
+    });
   });
 
   describe('recordPublish', () => {

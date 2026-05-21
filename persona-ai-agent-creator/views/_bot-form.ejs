@@ -7,7 +7,10 @@
 
 <div class="px-margin-mobile py-stack-md pb-36">
     <!-- Progress Stepper -->
-    <div class="max-w-xl mx-auto mb-10 space-y-base sticky top-24 z-30 glass-bar rounded-2xl px-4 py-3">
+    <div class="max-w-xl mx-auto mb-10 space-y-base sticky top-24 z-30 glass-bar rounded-2xl px-4 py-3" id="stepper-card">
+        <!-- Outward Fillets for Stuck Header Banner Effect -->
+        <div class="stepper-fillet-left" aria-hidden="true"></div>
+        <div class="stepper-fillet-right" aria-hidden="true"></div>
         <div class="flex justify-between items-center px-1">
             <span class="font-label-sm text-label-sm text-on-surface-variant" id="step-count"><%= t('form.stepOf').replace('{0}', '1').replace('{1}', '3') %></span>
             <span class="font-label-sm text-label-sm text-primary font-bold uppercase tracking-widest" id="step-title"><%= t('form.step1Title') %></span>
@@ -40,12 +43,12 @@
                             <span class="text-4xl p-3 bg-surface-container-highest/50 rounded-2xl shadow-inner group-hover:scale-110 transition-transform">👔</span>
                             <div>
                                 <span class="font-headline-md text-headline-md text-on-surface font-bold group-hover:text-primary transition-colors"><%= t('form.templateProfessional') %></span>
-                                <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Efficient and concise professional partner.</p>
+                                <p class="text-xs text-on-surface-variant mt-1 leading-relaxed"><%= t('form.templateProfessionalDesc') %></p>
                             </div>
                             <div class="flex flex-wrap gap-1.5 mt-2">
-                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-outline/10 text-on-surface-variant font-bold">👔 Professional</span>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">🌐 Web</span>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">⏰ Time</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-outline/10 text-on-surface-variant font-bold"><%= t('form.tagProfessional') %></span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold"><%= t('form.tagWeb') %></span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold"><%= t('form.tagTime') %></span>
                             </div>
                         </button>
                         
@@ -53,12 +56,12 @@
                             <span class="text-4xl p-3 bg-surface-container-highest/50 rounded-2xl shadow-inner group-hover:scale-110 transition-transform">🎨</span>
                             <div>
                                 <span class="font-headline-md text-headline-md text-on-surface font-bold group-hover:text-primary transition-colors"><%= t('form.templateCreative') %></span>
-                                <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Thoughtful, imaginative and warm collaborator.</p>
+                                <p class="text-xs text-on-surface-variant mt-1 leading-relaxed"><%= t('form.templateCreativeDesc') %></p>
                             </div>
                             <div class="flex flex-wrap gap-1.5 mt-2">
-                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-outline/10 text-on-surface-variant font-bold">🎨 Creative</span>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">🧠 Memory</span>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">🌐 Web</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-outline/10 text-on-surface-variant font-bold"><%= t('form.tagCreative') %></span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold"><%= t('form.tagMemory') %></span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold"><%= t('form.tagWeb') %></span>
                             </div>
                         </button>
                         
@@ -66,12 +69,12 @@
                             <span class="text-4xl p-3 bg-surface-container-highest/50 rounded-2xl shadow-inner group-hover:scale-110 transition-transform">🔍</span>
                             <div>
                                 <span class="font-headline-md text-headline-md text-on-surface font-bold group-hover:text-primary transition-colors"><%= t('form.templateResearcher') %></span>
-                                <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Fact-checked, detailed, and highly analytical.</p>
+                                <p class="text-xs text-on-surface-variant mt-1 leading-relaxed"><%= t('form.templateResearcherDesc') %></p>
                             </div>
                             <div class="flex flex-wrap gap-1.5 mt-2">
-                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-outline/10 text-on-surface-variant font-bold">🔬 Analytical</span>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">📚 Wikipedia</span>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">🌐 Web</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-outline/10 text-on-surface-variant font-bold"><%= t('form.tagAnalytical') %></span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold"><%= t('form.tagWikipedia') %></span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold"><%= t('form.tagWeb') %></span>
                             </div>
                         </button>
                     </div>
@@ -199,7 +202,7 @@
                             <span class="text-3xl shrink-0">😊</span>
                             <div class="flex-1 min-w-0">
                                 <div class="font-headline-md text-headline-md text-on-surface font-bold truncate"><%= t('form.toneFriendly') %></div>
-                                <p class="text-[11px] text-on-surface-variant truncate">Warm, supportive, and social</p>
+                                <p class="text-[11px] text-on-surface-variant truncate"><%= t('form.toneFriendlyDesc') %></p>
                             </div>
                             <span class="material-symbols-outlined text-primary shrink-0 opacity-0 scale-50 transition-all duration-300" style="font-variation-settings: 'FILL' 1;">check_circle</span>
                         </button>
@@ -207,7 +210,7 @@
                             <span class="text-3xl shrink-0">👔</span>
                             <div class="flex-1 min-w-0">
                                 <div class="font-headline-md text-headline-md text-on-surface font-bold truncate"><%= t('form.toneProfessional') %></div>
-                                <p class="text-[11px] text-on-surface-variant truncate">Respectful, precise, and polished</p>
+                                <p class="text-[11px] text-on-surface-variant truncate"><%= t('form.toneProfessionalDesc') %></p>
                             </div>
                             <span class="material-symbols-outlined text-primary shrink-0 opacity-0 scale-50 transition-all duration-300" style="font-variation-settings: 'FILL' 1;">check_circle</span>
                         </button>
@@ -215,7 +218,7 @@
                             <span class="text-3xl shrink-0">⚡</span>
                             <div class="flex-1 min-w-0">
                                 <div class="font-headline-md text-headline-md text-on-surface font-bold truncate"><%= t('form.toneConcise') %></div>
-                                <p class="text-[11px] text-on-surface-variant truncate">Brief, efficient, straight to-the-point</p>
+                                <p class="text-[11px] text-on-surface-variant truncate"><%= t('form.toneConciseDesc') %></p>
                             </div>
                             <span class="material-symbols-outlined text-primary shrink-0 opacity-0 scale-50 transition-all duration-300" style="font-variation-settings: 'FILL' 1;">check_circle</span>
                         </button>
@@ -223,7 +226,7 @@
                             <span class="text-3xl shrink-0">🎨</span>
                             <div class="flex-1 min-w-0">
                                 <div class="font-headline-md text-headline-md text-on-surface font-bold truncate"><%= t('form.toneCreative') %></div>
-                                <p class="text-[11px] text-on-surface-variant truncate">Vibrant, descriptive, engaging</p>
+                                <p class="text-[11px] text-on-surface-variant truncate"><%= t('form.toneCreativeDesc') %></p>
                             </div>
                             <span class="material-symbols-outlined text-primary shrink-0 opacity-0 scale-50 transition-all duration-300" style="font-variation-settings: 'FILL' 1;">check_circle</span>
                         </button>
@@ -263,6 +266,17 @@
                         <div class="flex items-center gap-6 bg-surface-container-lowest border border-outline rounded-2xl p-4 shadow-inner">
                             <input type="range" id="minimumAge" name="minimumAge" min="1" max="100" value="<%= bot ? (bot.minimum_age || 1) : 1 %>" class="flex-1 accent-primary h-1.5 bg-surface-container rounded-full appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50" oninput="document.getElementById('age-val').innerText = this.value" />
                             <span class="w-14 text-center font-bold text-primary bg-primary/10 py-2 rounded-xl text-lg border border-primary/20" id="age-val"><%= bot ? (bot.minimum_age || 1) : 1 %></span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="label-enhanced" for="language"><%= t('form.languageLabel') %></label>
+                        <div class="relative">
+                            <select id="language" name="language" class="input-enhanced w-full h-[58px] px-4 pr-10 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50 appearance-none bg-no-repeat bg-[right_1.25rem_center] bg-[length:1.25em_1.25em]" style="background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22m6 9 6 6 6-6%22/%3E%3C/svg%3E');">
+                                <option value="auto" <%= (bot && bot.language === 'auto') || !bot ? 'selected' : '' %>><%= t('form.languageAuto') %></option>
+                                <option value="es" <%= bot && bot.language === 'es' ? 'selected' : '' %>><%= t('form.languageEs') %></option>
+                                <option value="en" <%= bot && bot.language === 'en' ? 'selected' : '' %>><%= t('form.languageEn') %></option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -555,7 +569,7 @@
 
         pName?.addEventListener('input', () => {
             if (!isServiceNameDirty && sName) {
-                sName.value = pName.value ? `${pName.value} Assistant` : '';
+                sName.value = pName.value ? `${pName.value} <%= t('form.assistantSuffix') %>` : '';
             }
         });
 
@@ -568,26 +582,26 @@
         window.applyTemplate = (type) => {
             const templates = {
                 professional: {
-                    name: 'Alex',
-                    role: 'Professional Assistant',
-                    bio: 'Reliable and efficient professional assistant. Skilled in organization, communication, and problem-solving.',
-                    prompt: 'You are Alex, a capable and professional assistant. You are concise, organized, and solution-oriented. You communicate clearly and help users get things done efficiently. You ask clarifying questions when needed and provide practical, actionable advice.',
+                    name: `<%= t('form.presetProfessionalName') %>`,
+                    role: `<%= t('form.presetProfessionalRole') %>`,
+                    bio: `<%= t('form.presetProfessionalBio') %>`,
+                    prompt: `<%= t('form.presetProfessionalPrompt') %>`,
                     mcps: ['fetch', 'time'],
                     tones: ['professional']
                 },
                 creative: {
-                    name: 'Sam',
-                    role: 'Creative Assistant',
-                    bio: 'Imaginative and thoughtful creative partner. Passionate about ideas, writing, and design.',
-                    prompt: 'You are Sam, a creative and articulate assistant. You think outside the box and help users brainstorm, refine ideas, and express themselves. You are supportive, imaginative, and detail-oriented. You offer constructive suggestions and help bring creative visions to life.',
+                    name: `<%= t('form.presetCreativeName') %>`,
+                    role: `<%= t('form.presetCreativeRole') %>`,
+                    bio: `<%= t('form.presetCreativeBio') %>`,
+                    prompt: `<%= t('form.presetCreativePrompt') %>`,
                     mcps: ['fetch', 'memory'],
                     tones: ['creative', 'friendly']
                 },
                 researcher: {
-                    name: 'Jordan',
-                    role: 'Research Analyst',
-                    bio: 'Curious and thorough research analyst. Focused on finding accurate information and synthesizing insights.',
-                    prompt: 'You are Jordan, a meticulous research analyst. You verify facts, cross-reference sources, and provide well-reasoned answers. You are objective, thorough, and precise. When you are unsure about something, you say so rather than guessing. You cite your sources when possible and prioritize accuracy over speed.',
+                    name: `<%= t('form.presetResearcherName') %>`,
+                    role: `<%= t('form.presetResearcherRole') %>`,
+                    bio: `<%= t('form.presetResearcherBio') %>`,
+                    prompt: `<%= t('form.presetResearcherPrompt') %>`,
                     mcps: ['wikipedia', 'fetch', 'memory'],
                     tones: ['professional', 'concise']
                 }
@@ -697,5 +711,44 @@
         sync();
         updatePreviewSkills();
         updateMockup();
+
+        // Progressive Stepper Scroll-Driven Interaction (Inward to Outward Curvature Fillets)
+        (() => {
+            const stepper = document.getElementById('stepper-card');
+            if (!stepper) return;
+            
+            const handleScroll = () => {
+                const rect = stepper.getBoundingClientRect();
+                const triggerStart = 160; // scroll distance in px where progressive collapse starts
+                const triggerEnd = 96;   // header bottom sticky point in px (top-24)
+                
+                let progress = 0;
+                if (rect.top <= triggerEnd) {
+                    progress = 1;
+                } else if (rect.top >= triggerStart) {
+                    progress = 0;
+                } else {
+                    progress = (triggerStart - rect.top) / (triggerStart - triggerEnd);
+                }
+                
+                // Reduce only top two corners' border-radius from 16px to 0px, keeping bottom corners at 16px
+                const maxRadius = 16;
+                const currentRadius = maxRadius * (1 - progress);
+                stepper.style.borderTopLeftRadius = `${currentRadius}px`;
+                stepper.style.borderTopRightRadius = `${currentRadius}px`;
+                stepper.style.borderBottomLeftRadius = '16px';
+                stepper.style.borderBottomRightRadius = '16px';
+                
+                // Toggle is-stuck class to render and scale the outward fillets
+                if (progress >= 1) {
+                    stepper.classList.add('is-stuck');
+                } else {
+                    stepper.classList.remove('is-stuck');
+                }
+            };
+            
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            handleScroll(); // initial check
+        })();
     })();
 </script>
