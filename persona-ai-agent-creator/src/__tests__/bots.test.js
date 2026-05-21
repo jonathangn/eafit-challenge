@@ -414,5 +414,30 @@ describe('Bots routes', () => {
         });
       expect(res.status).toBe(302);
     });
+
+    it('creates a bot with tone presets saved correctly and empty prompt', async () => {
+      const res = await request(app)
+        .post('/bots')
+        .type('form')
+        .set('Cookie', agentCookie)
+        .send({
+          personaName: 'Tone Test Bot',
+          personaProfession: 'Actor',
+          personaDescription: 'Expressive personality',
+          serviceName: 'tone-test-service',
+          serviceDescription: 'Test service',
+          photoUrl: '',
+          tones: 'friendly,creative',
+        });
+      expect(res.status).toBe(302);
+
+      const db = require('../db/sqlite');
+      const bot = db.find('bots', b => b.service_name === 'tone-test-service');
+      expect(bot).toBeDefined();
+      expect(Array.isArray(bot.tones)).toBe(true);
+      expect(bot.tones).toContain('friendly');
+      expect(bot.tones).toContain('creative');
+      expect(bot.prompt).toBe('');
+    });
   });
 });

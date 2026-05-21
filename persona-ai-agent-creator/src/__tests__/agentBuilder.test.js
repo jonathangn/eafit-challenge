@@ -183,6 +183,14 @@ describe('buildAgentPack', () => {
       expect(sysPrompt).toContain('You are a helpful assistant');
     });
 
+    it('compiles a system prompt using dynamic tones when prompt is empty', () => {
+      const bot = { ...MIN_BOT, prompt: '', tones: ['friendly', 'concise'] };
+      const { agentPack } = buildAgentPack(bot);
+      const sysPrompt = agentPack.languages.en.systemPrompt;
+      expect(sysPrompt).toContain('Warm, enthusiastic, and empathetic');
+      expect(sysPrompt).toContain('Exceptionally brief, direct, and to-the-point');
+    });
+
     it('deduplicates MCP servers', () => {
       const bot = { ...MIN_BOT, mcp_servers: ['weather', 'weather', 'time'] };
       const { agentPack } = buildAgentPack(bot);
