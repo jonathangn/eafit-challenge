@@ -35,18 +35,44 @@
 
             <!-- Templates -->
                 <% if (!isEdit) { %>
-                    <div class="grid grid-cols-3 gap-3">
-                        <button type="button" onclick="applyTemplate('professional')" class="glass-panel rounded-2xl p-4 flex flex-col items-center gap-2 hover:bg-primary/10 hover:border-primary/30 transition-all active:scale-95">
-                            <span class="text-3xl">👔</span>
-                            <span class="font-label-sm text-label-sm text-on-surface font-bold opacity-80"><%= t('form.templateProfessional') %></span>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <button type="button" onclick="applyTemplate('professional')" class="glass-panel rounded-3xl p-5 flex flex-col items-start text-left gap-3 hover:bg-primary/10 hover:border-primary/30 transition-all hover:shadow-xl active:scale-[0.98] group relative">
+                            <span class="text-4xl p-3 bg-surface-container-highest/50 rounded-2xl shadow-inner group-hover:scale-110 transition-transform">👔</span>
+                            <div>
+                                <span class="font-headline-md text-headline-md text-on-surface font-bold group-hover:text-primary transition-colors"><%= t('form.templateProfessional') %></span>
+                                <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Efficient and concise professional partner.</p>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 mt-2">
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-outline/10 text-on-surface-variant font-bold">👔 Professional</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">🌐 Web</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">⏰ Time</span>
+                            </div>
                         </button>
-                        <button type="button" onclick="applyTemplate('creative')" class="glass-panel rounded-2xl p-4 flex flex-col items-center gap-2 hover:bg-primary/10 hover:border-primary/30 transition-all active:scale-95">
-                            <span class="text-3xl">🎨</span>
-                            <span class="font-label-sm text-label-sm text-on-surface font-bold opacity-80"><%= t('form.templateCreative') %></span>
+                        
+                        <button type="button" onclick="applyTemplate('creative')" class="glass-panel rounded-3xl p-5 flex flex-col items-start text-left gap-3 hover:bg-primary/10 hover:border-primary/30 transition-all hover:shadow-xl active:scale-[0.98] group relative">
+                            <span class="text-4xl p-3 bg-surface-container-highest/50 rounded-2xl shadow-inner group-hover:scale-110 transition-transform">🎨</span>
+                            <div>
+                                <span class="font-headline-md text-headline-md text-on-surface font-bold group-hover:text-primary transition-colors"><%= t('form.templateCreative') %></span>
+                                <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Thoughtful, imaginative and warm collaborator.</p>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 mt-2">
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-outline/10 text-on-surface-variant font-bold">🎨 Creative</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">🧠 Memory</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">🌐 Web</span>
+                            </div>
                         </button>
-                        <button type="button" onclick="applyTemplate('researcher')" class="glass-panel rounded-2xl p-4 flex flex-col items-center gap-2 hover:bg-primary/10 hover:border-primary/30 transition-all active:scale-95">
-                            <span class="text-3xl">🔍</span>
-                            <span class="font-label-sm text-label-sm text-on-surface font-bold opacity-80"><%= t('form.templateResearcher') %></span>
+                        
+                        <button type="button" onclick="applyTemplate('researcher')" class="glass-panel rounded-3xl p-5 flex flex-col items-start text-left gap-3 hover:bg-primary/10 hover:border-primary/30 transition-all hover:shadow-xl active:scale-[0.98] group relative">
+                            <span class="text-4xl p-3 bg-surface-container-highest/50 rounded-2xl shadow-inner group-hover:scale-110 transition-transform">🔍</span>
+                            <div>
+                                <span class="font-headline-md text-headline-md text-on-surface font-bold group-hover:text-primary transition-colors"><%= t('form.templateResearcher') %></span>
+                                <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Fact-checked, detailed, and highly analytical.</p>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 mt-2">
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-outline/10 text-on-surface-variant font-bold">🔬 Analytical</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">📚 Wikipedia</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">🌐 Web</span>
+                            </div>
                         </button>
                     </div>
                 <% } %>
@@ -116,8 +142,10 @@
         <!-- Step 2: Skills & Superpowers -->
         <div class="wizard-step space-y-stack-md hidden animate-in fade-in slide-in-from-bottom-4 duration-500" data-step="2">
             <div class="space-y-base">
-                <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface"><%= t('form.equipAgent') %></h2>
-                <p class="font-body-md text-body-md text-on-surface-variant"><%= t('form.step2Desc') %></p>
+                <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface flex items-center gap-2">
+                    <%= t('form.superpowersLabel') %>
+                </h2>
+                <p class="font-body-md text-body-md text-on-surface-variant"><%= t('form.superpowersTooltip') %></p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -145,10 +173,10 @@
             <div class="glass-panel rounded-3xl p-8 space-y-4 shadow-inner">
                 <div class="flex items-center gap-2 text-primary">
                     <span class="material-symbols-outlined">link</span>
-                    <h3 class="font-label-md text-label-md uppercase tracking-widest font-bold"><%= t('form.knowledgeTitle') %></h3>
+                    <h3 class="font-label-md text-label-md uppercase tracking-widest font-bold"><%= t('form.websiteContextLabel') %></h3>
                 </div>
                 <textarea name="ragUrls" class="input-enhanced w-full" rows="3" placeholder="<%= t('form.knowledgePlaceholder') %>"><%= bot ? (bot.rag_urls || []).join("\n") : '' %></textarea>
-                <p class="font-label-sm text-label-sm text-on-surface-variant opacity-80 italic"><%= t('form.knowledgeHint') %></p>
+                <p class="font-label-sm text-label-sm text-on-surface-variant opacity-80 italic"><%= t('form.websiteContextTooltip') %></p>
             </div>
         </div>
 
@@ -159,42 +187,97 @@
                 <p class="font-body-md text-body-md text-on-surface-variant"><%= t('form.step3Desc') %></p>
             </div>
 
+            <!-- Personality Tone Preset Selector -->
             <div class="glass-panel rounded-3xl p-8 space-y-6">
-                <%- include("partials/input", { 
-                    name: "serviceName", 
-                    type: "text", 
-                    label: t('form.serviceNameLabel'), 
-                    placeholder: bot ? '' : t('form.serviceNamePlaceholder'), 
-                    value: bot ? bot.service_name : '', 
-                    required: true 
-                }) %>
+                <div class="space-y-3">
+                    <label class="label-enhanced"><%= t('form.toneSelectLabel') %></label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="tone-chips">
+                        <button type="button" onclick="toggleTone('friendly')" data-tone="friendly" class="tone-chip glass-panel rounded-2xl p-4 flex items-center gap-3 border border-outline/10 hover:bg-primary/5 hover:border-primary/30 transition-all cursor-pointer text-left">
+                            <span class="text-3xl shrink-0">😊</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-headline-md text-headline-md text-on-surface font-bold truncate"><%= t('form.toneFriendly') %></div>
+                                <p class="text-[11px] text-on-surface-variant truncate">Warm, supportive, and social</p>
+                            </div>
+                            <span class="material-symbols-outlined text-primary shrink-0 opacity-0 scale-50 transition-all duration-300" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        </button>
+                        <button type="button" onclick="toggleTone('professional')" data-tone="professional" class="tone-chip glass-panel rounded-2xl p-4 flex items-center gap-3 border border-outline/10 hover:bg-primary/5 hover:border-primary/30 transition-all cursor-pointer text-left">
+                            <span class="text-3xl shrink-0">👔</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-headline-md text-headline-md text-on-surface font-bold truncate"><%= t('form.toneProfessional') %></div>
+                                <p class="text-[11px] text-on-surface-variant truncate">Respectful, precise, and polished</p>
+                            </div>
+                            <span class="material-symbols-outlined text-primary shrink-0 opacity-0 scale-50 transition-all duration-300" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        </button>
+                        <button type="button" onclick="toggleTone('concise')" data-tone="concise" class="tone-chip glass-panel rounded-2xl p-4 flex items-center gap-3 border border-outline/10 hover:bg-primary/5 hover:border-primary/30 transition-all cursor-pointer text-left">
+                            <span class="text-3xl shrink-0">⚡</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-headline-md text-headline-md text-on-surface font-bold truncate"><%= t('form.toneConcise') %></div>
+                                <p class="text-[11px] text-on-surface-variant truncate">Brief, efficient, straight to-the-point</p>
+                            </div>
+                            <span class="material-symbols-outlined text-primary shrink-0 opacity-0 scale-50 transition-all duration-300" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        </button>
+                        <button type="button" onclick="toggleTone('creative')" data-tone="creative" class="tone-chip glass-panel rounded-2xl p-4 flex items-center gap-3 border border-outline/10 hover:bg-primary/5 hover:border-primary/30 transition-all cursor-pointer text-left">
+                            <span class="text-3xl shrink-0">🎨</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-headline-md text-headline-md text-on-surface font-bold truncate"><%= t('form.toneCreative') %></div>
+                                <p class="text-[11px] text-on-surface-variant truncate">Vibrant, descriptive, engaging</p>
+                            </div>
+                            <span class="material-symbols-outlined text-primary shrink-0 opacity-0 scale-50 transition-all duration-300" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        </button>
+                    </div>
+                    <input type="hidden" name="tones" id="tones-input" value="<%= bot && bot.tones ? bot.tones.join(',') : '' %>" />
+                </div>
+            </div>
 
-                <%- include("partials/input", { 
-                    name: "serviceDescription", 
-                    type: "text", 
-                    label: t('form.serviceTaglineLabel'), 
-                    placeholder: bot ? '' : t('form.serviceTaglinePlaceholder'), 
-                    value: bot ? bot.service_description : '' 
-                }) %>
+            <!-- Collapsible Advanced Settings (Optional) -->
+            <details class="group border border-outline/10 rounded-3xl bg-surface-container-lowest/30 transition-all overflow-hidden duration-300">
+                <summary class="flex justify-between items-center p-6 cursor-pointer select-none font-bold text-on-surface hover:text-primary list-none [&::-webkit-details-marker]:hidden">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined transition-transform duration-300 group-open:rotate-180">expand_more</span>
+                        <h3 class="font-label-md text-label-md uppercase tracking-widest font-bold"><%= t('form.advancedServiceSettings') %></h3>
+                    </div>
+                </summary>
+                <div class="px-8 pb-8 space-y-6 border-t border-outline/5 pt-6">
+                    <%- include("partials/input", { 
+                        name: "serviceName", 
+                        type: "text", 
+                        label: t('form.serviceNameLabel'), 
+                        placeholder: bot ? '' : t('form.serviceNamePlaceholder'), 
+                        value: bot ? bot.service_name : '', 
+                        required: true 
+                    }) %>
 
-                <div class="space-y-2">
-                    <label class="label-enhanced"><%= t('form.ageLabel') %></label>
-                    <div class="flex items-center gap-6 bg-surface-container-lowest border border-outline rounded-2xl p-4 shadow-inner">
-                        <input type="range" name="minimumAge" min="1" max="100" value="<%= bot ? (bot.minimum_age || 1) : 1 %>" class="flex-1 accent-primary h-1.5 bg-surface-container rounded-full appearance-none cursor-pointer" oninput="document.getElementById('age-val').innerText = this.value" />
-                        <span class="w-14 text-center font-bold text-primary bg-primary/10 py-2 rounded-xl text-lg border border-primary/20" id="age-val"><%= bot ? (bot.minimum_age || 1) : 1 %></span>
+                    <%- include("partials/input", { 
+                        name: "serviceDescription", 
+                        type: "text", 
+                        label: t('form.serviceTaglineLabel'), 
+                        placeholder: bot ? '' : t('form.serviceTaglinePlaceholder'), 
+                        value: bot ? bot.service_description : '' 
+                    }) %>
+
+                    <div class="space-y-2">
+                        <label class="label-enhanced"><%= t('form.ageLabel') %></label>
+                        <div class="flex items-center gap-6 bg-surface-container-lowest border border-outline rounded-2xl p-4 shadow-inner">
+                            <input type="range" name="minimumAge" min="1" max="100" value="<%= bot ? (bot.minimum_age || 1) : 1 %>" class="flex-1 accent-primary h-1.5 bg-surface-container rounded-full appearance-none cursor-pointer" oninput="document.getElementById('age-val').innerText = this.value" />
+                            <span class="w-14 text-center font-bold text-primary bg-primary/10 py-2 rounded-xl text-lg border border-primary/20" id="age-val"><%= bot ? (bot.minimum_age || 1) : 1 %></span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </details>
 
-            <!-- Advanced Config -->
-            <div class="glass-panel rounded-3xl p-8 space-y-4">
-                <div class="flex items-center gap-2 text-on-surface">
-                    <span class="material-symbols-outlined">psychology</span>
-                    <h3 class="font-label-md text-label-md uppercase tracking-widest font-bold"><%= t('form.aiPersonalityTitle') %></h3>
+            <!-- Advanced Prompts (Optional) -->
+            <details class="group border border-outline/10 rounded-3xl bg-surface-container-lowest/30 transition-all overflow-hidden duration-300">
+                <summary class="flex justify-between items-center p-6 cursor-pointer select-none font-bold text-on-surface hover:text-primary list-none [&::-webkit-details-marker]:hidden">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined transition-transform duration-300 group-open:rotate-180">expand_more</span>
+                        <h3 class="font-label-md text-label-md uppercase tracking-widest font-bold"><%= t('form.advancedDeveloperPrompts') %></h3>
+                    </div>
+                </summary>
+                <div class="px-8 pb-8 space-y-4 border-t border-outline/5 pt-6">
+                    <textarea id="prompt" name="prompt" class="input-enhanced w-full" rows="6" placeholder="<%= t('form.aiPersonalityPlaceholderSimplified') %>"><%= bot ? bot.prompt : '' %></textarea>
+                    <p class="font-label-sm text-label-sm text-on-surface-variant opacity-80 italic"><%= t('form.aiPersonalityHint') %></p>
                 </div>
-                <textarea id="prompt" name="prompt" class="input-enhanced w-full" rows="6" placeholder="<%= t('form.aiPersonalityPlaceholder') %>"><%= bot ? bot.prompt : '' %></textarea>
-                <p class="font-label-sm text-label-sm text-on-surface-variant opacity-80 italic"><%= t('form.aiPersonalityHint') %></p>
-            </div>
+            </details>
         </div>
 
         <!-- Hidden Form Controls -->
@@ -397,6 +480,79 @@
             reader.readAsDataURL(file);
         };
 
+        window.toggleTone = (tone) => {
+            const input = document.getElementById('tones-input');
+            let tones = input.value ? input.value.split(',').filter(Boolean) : [];
+            
+            const index = tones.indexOf(tone);
+            if (index > -1) {
+                tones.splice(index, 1);
+            } else {
+                tones.push(tone);
+            }
+            
+            input.value = tones.join(',');
+            
+            const chip = document.querySelector(`.tone-chip[data-tone="${tone}"]`);
+            if (chip) {
+                const isSelected = tones.includes(tone);
+                chip.classList.toggle('bg-primary/10', isSelected);
+                chip.classList.toggle('border-primary/40', isSelected);
+                
+                const checkIcon = chip.querySelector('.material-symbols-outlined');
+                if (checkIcon) {
+                    checkIcon.classList.toggle('opacity-100', isSelected);
+                    checkIcon.classList.toggle('scale-100', isSelected);
+                    checkIcon.classList.toggle('opacity-0', !isSelected);
+                    checkIcon.classList.toggle('scale-50', !isSelected);
+                }
+            }
+        };
+
+        window.selectTones = (toneList) => {
+            const input = document.getElementById('tones-input');
+            input.value = toneList.join(',');
+            
+            document.querySelectorAll('.tone-chip').forEach(chip => {
+                const tone = chip.getAttribute('data-tone');
+                const isSelected = toneList.includes(tone);
+                chip.classList.toggle('bg-primary/10', isSelected);
+                chip.classList.toggle('border-primary/40', isSelected);
+                
+                const checkIcon = chip.querySelector('.material-symbols-outlined');
+                if (checkIcon) {
+                    checkIcon.classList.toggle('opacity-100', isSelected);
+                    checkIcon.classList.toggle('scale-100', isSelected);
+                    checkIcon.classList.toggle('opacity-0', !isSelected);
+                    checkIcon.classList.toggle('scale-50', !isSelected);
+                }
+            });
+        };
+
+        // Smart dynamic autofill listeners
+        const pName = document.getElementById('personaName');
+        const pProfession = document.getElementById('personaProfession');
+        const sName = document.getElementById('serviceName');
+        const sDescription = document.getElementById('serviceDescription');
+
+        let isServiceNameDirty = sName && sName.value !== '';
+        let isServiceDescriptionDirty = sDescription && sDescription.value !== '';
+
+        sName?.addEventListener('input', () => { isServiceNameDirty = true; });
+        sDescription?.addEventListener('input', () => { isServiceDescriptionDirty = true; });
+
+        pName?.addEventListener('input', () => {
+            if (!isServiceNameDirty && sName) {
+                sName.value = pName.value ? `${pName.value} Assistant` : '';
+            }
+        });
+
+        pProfession?.addEventListener('input', () => {
+            if (!isServiceDescriptionDirty && sDescription) {
+                sDescription.value = pProfession.value || '';
+            }
+        });
+
         window.applyTemplate = (type) => {
             const templates = {
                 professional: {
@@ -404,21 +560,24 @@
                     role: 'Professional Assistant',
                     bio: 'Reliable and efficient professional assistant. Skilled in organization, communication, and problem-solving.',
                     prompt: 'You are Alex, a capable and professional assistant. You are concise, organized, and solution-oriented. You communicate clearly and help users get things done efficiently. You ask clarifying questions when needed and provide practical, actionable advice.',
-                    mcps: ['fetch', 'time']
+                    mcps: ['fetch', 'time'],
+                    tones: ['professional']
                 },
                 creative: {
                     name: 'Sam',
                     role: 'Creative Assistant',
                     bio: 'Imaginative and thoughtful creative partner. Passionate about ideas, writing, and design.',
                     prompt: 'You are Sam, a creative and articulate assistant. You think outside the box and help users brainstorm, refine ideas, and express themselves. You are supportive, imaginative, and detail-oriented. You offer constructive suggestions and help bring creative visions to life.',
-                    mcps: ['fetch', 'memory']
+                    mcps: ['fetch', 'memory'],
+                    tones: ['creative', 'friendly']
                 },
                 researcher: {
                     name: 'Jordan',
                     role: 'Research Analyst',
                     bio: 'Curious and thorough research analyst. Focused on finding accurate information and synthesizing insights.',
                     prompt: 'You are Jordan, a meticulous research analyst. You verify facts, cross-reference sources, and provide well-reasoned answers. You are objective, thorough, and precise. When you are unsure about something, you say so rather than guessing. You cite your sources when possible and prioritize accuracy over speed.',
-                    mcps: ['wikipedia', 'fetch', 'memory']
+                    mcps: ['wikipedia', 'fetch', 'memory'],
+                    tones: ['professional', 'concise']
                 }
             };
             
@@ -438,6 +597,11 @@
                     }
                 });
                 updatePreviewSkills();
+
+                // Check template recommended tones
+                if (t.tones) {
+                    window.selectTones(t.tones);
+                }
                 
                 [document.getElementById('personaName'), document.getElementById('personaProfession')].forEach(el => {
                     el.classList.add('ring-2', 'ring-primary/50');
@@ -455,7 +619,8 @@
                 const data = new FormData(form);
                 const state = { step: currentStep, values: {}, mcps: [], botId: currentBotId };
                 for (const [key, value] of data.entries()) {
-                    if (key !== 'photo' && key !== '_csrf') state.values[key] = value;
+                    if (key !== 'photo' && key !== '_csrf' && key !== 'tones') continue;
+                    state.values[key] = value;
                 }
                 document.querySelectorAll('input[name="mcpServers"]:checked').forEach(cb => state.mcps.push(cb.value));
                 sessionStorage.setItem('wizardState', JSON.stringify(state));
@@ -471,7 +636,7 @@
                 const state = JSON.parse(saved);
                 if (!state.botId || state.botId !== currentBotId) { sessionStorage.removeItem('wizardState'); throw 'skip'; }
                 for (const [key, value] of Object.entries(state.values)) {
-                    if (key === 'mcpServers' || key === '_csrf') continue;
+                    if (key === 'mcpServers' || key === '_csrf' || key === 'tones') continue;
                     const el = document.querySelector(`[name="${key}"]`);
                     if (el) { el.value = value; el.dispatchEvent(new Event('input', { bubbles: true })); }
                 }
@@ -488,6 +653,9 @@
                         }
                     }
                 });
+                if (state.values.tones) {
+                    window.selectTones(state.values.tones.split(',').filter(Boolean));
+                }
                 if (state.step >= 1 && state.step <= totalSteps) {
                     currentStep = state.step;
                     window._wizardStep = currentStep;
@@ -500,6 +668,12 @@
                 }
             } catch (e) {}
             sessionStorage.removeItem('wizardState');
+        }
+
+        // Restore tones initially if page already contains them
+        const initialTones = document.getElementById('tones-input')?.value;
+        if (initialTones) {
+            window.selectTones(initialTones.split(',').filter(Boolean));
         }
 
         document.getElementById('botForm')?.addEventListener('submit', () => {

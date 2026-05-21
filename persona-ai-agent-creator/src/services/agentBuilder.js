@@ -48,7 +48,34 @@ const DEFAULT_SERVERS = [];
 function buildAgentPack(bot) {
   const finalServers = Array.from(new Set([...(bot.mcp_servers || []), ...DEFAULT_SERVERS]));
 
-  let augmentedPrompt = bot.prompt || 'You are a helpful assistant.';
+  let augmentedPrompt = bot.prompt;
+
+  if (!augmentedPrompt) {
+    const name = bot.persona_name || bot.service_name || 'Assistant';
+    const role = bot.persona_profession || bot.service_description || 'Digital Assistant';
+    const bio = bot.persona_description || 'A helpful, intelligent assistant.';
+
+    let toneInstructions = '';
+    const tones = Array.isArray(bot.tones) ? bot.tones : (typeof bot.tones === 'string' ? bot.tones.split(',').filter(Boolean) : []);
+
+    if (tones.includes('friendly')) {
+      toneInstructions += '- Warm, enthusiastic, and empathetic. Use friendly conversational markers and sound highly approachable.\n';
+    }
+    if (tones.includes('professional')) {
+      toneInstructions += '- Highly professional, formal, and authoritative. Use refined language and maintain a respectful, polished demeanor.\n';
+    }
+    if (tones.includes('concise')) {
+      toneInstructions += '- Exceptionally brief, direct, and to-the-point. Avoid fluff or filler words.\n';
+    }
+    if (tones.includes('creative')) {
+      toneInstructions += '- Imaginative, expressive, and engaging. Feel free to use rich descriptions and vivid analogies.\n';
+    }
+    if (!toneInstructions) {
+      toneInstructions += '- Friendly, helpful, balanced, and conversational.\n';
+    }
+
+    augmentedPrompt = `You are ${name}, working as a ${role}.\nYou are a helpful assistant.\n\n### Personality Bio\n${bio}\n\n### Communication Style & Guidelines\nAlways align your responses with the following tones:\n${toneInstructions}`;
+  }
 
   // Plain-text rule — Hologram does not render markdown
   augmentedPrompt += '\n\nIMPORTANT: Always respond in plain text. Do NOT use markdown formatting (no **, no #, no bullet hyphens, no backticks, no tables). Write naturally as if speaking, using simple line breaks when needed.';

@@ -14,6 +14,7 @@ sqlite.pragma('journal_mode = WAL');
 
 // Migrate existing databases: add columns that may not exist
 try { sqlite.exec(`ALTER TABLE bots ADD COLUMN minimum_age INTEGER DEFAULT 1`); } catch {};
+try { sqlite.exec(`ALTER TABLE bots ADD COLUMN tones TEXT`); } catch {};
 try { sqlite.exec(`ALTER TABLE users ADD COLUMN google_id TEXT`); } catch {};
 try { sqlite.exec(`ALTER TABLE bots ADD COLUMN mcp_config TEXT`); } catch {};
 try { sqlite.exec(`ALTER TABLE bots ADD COLUMN theme_color TEXT`); } catch {};
@@ -54,6 +55,7 @@ sqlite.exec(`
     photo_url           TEXT,
     theme_color         TEXT,
     minimum_age         INTEGER DEFAULT 1,
+    tones               TEXT,
     created_at          TEXT,
     updated_at          TEXT
   );
@@ -83,6 +85,11 @@ function parseJsonCols(row) {
   }
   if (row.mcp_config && typeof row.mcp_config === 'string') {
     try { row.mcp_config = JSON.parse(row.mcp_config); } catch { row.mcp_config = {}; }
+  }
+  if (row.tones === undefined || row.tones === null) {
+    row.tones = [];
+  } else if (typeof row.tones === 'string') {
+    try { row.tones = JSON.parse(row.tones); } catch { row.tones = []; }
   }
   if (row.success !== undefined) row.success = !!row.success;
   return row;

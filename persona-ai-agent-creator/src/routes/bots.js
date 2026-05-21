@@ -40,18 +40,20 @@ router.get('/new', (_req, res) => res.render('bot-new', { mcpCatalog }));
 
 router.post('/', upload.single('photo'), (req, res) => {
   const { serviceName, serviceDescription, personaName, personaProfession,
-          personaDescription, prompt, ragUrls, mcpServers, photoUrl, minimumAge } = req.body;
+          personaDescription, prompt, ragUrls, mcpServers, photoUrl, minimumAge, tones } = req.body;
 
   const serviceNameStr = typeof serviceName === 'string' ? serviceName.trim() : '';
   const personaNameStr = typeof personaName === 'string' ? personaName.trim() : '';
   const promptStr = typeof prompt === 'string' ? prompt.trim() : '';
+
+  const tonesArr = typeof tones === 'string' ? tones.split(',').filter(Boolean) : (Array.isArray(tones) ? tones : []);
 
   const sanitizedUrl = photoUrl && photoUrl.trim();
   const finalPhotoUrl = req.file
     ? `/uploads/${req.file.filename}`
     : (sanitizedUrl && !/^(javascript|data):/i.test(sanitizedUrl) ? sanitizedUrl : '');
 
-  if (!serviceNameStr || !personaNameStr || !promptStr) {
+  if (!serviceNameStr || !personaNameStr) {
     const error = res.locals.t('validation.botRequiredFields');
     return res.status(400).render('bot-new', {
       mcpCatalog,
@@ -66,7 +68,8 @@ router.post('/', upload.single('photo'), (req, res) => {
         rag_urls: ragUrls ? ragUrls.split('\n').filter(Boolean) : [],
         mcp_servers: mcpServers ? (Array.isArray(mcpServers) ? mcpServers : [mcpServers]) : [],
         photo_url: finalPhotoUrl,
-        minimum_age: minimumAge ? parseInt(minimumAge, 10) : 1
+        minimum_age: minimumAge ? parseInt(minimumAge, 10) : 1,
+        tones: tonesArr
       }
     });
   }
@@ -85,6 +88,7 @@ router.post('/', upload.single('photo'), (req, res) => {
     prompt:              promptStr,
     rag_urls:    ragUrls    ? ragUrls.split('\n').filter(Boolean) : [],
     mcp_servers: mcpServers ? (Array.isArray(mcpServers) ? mcpServers : [mcpServers]) : [],
+    tones:       tonesArr,
     public_url:     '',
     publish_status: 'draft',
     photo_url:           finalPhotoUrl,
@@ -140,18 +144,20 @@ router.post('/:id', upload.single('photo'), (req, res) => {
   if (!bot) return res.status(404).render('error', { message: 'Bot not found', status: 404 });
 
   const { serviceName, serviceDescription, personaName, personaProfession,
-          personaDescription, prompt, ragUrls, mcpServers, photoUrl, minimumAge } = req.body;
+          personaDescription, prompt, ragUrls, mcpServers, photoUrl, minimumAge, tones } = req.body;
 
   const serviceNameStr = typeof serviceName === 'string' ? serviceName.trim() : '';
   const personaNameStr = typeof personaName === 'string' ? personaName.trim() : '';
   const promptStr = typeof prompt === 'string' ? prompt.trim() : '';
+
+  const tonesArr = typeof tones === 'string' ? tones.split(',').filter(Boolean) : (Array.isArray(tones) ? tones : []);
 
   const sanitizedUrl = photoUrl && photoUrl.trim();
   const finalPhotoUrl = req.file
     ? `/uploads/${req.file.filename}`
     : (sanitizedUrl && !/^(javascript|data):/i.test(sanitizedUrl) ? sanitizedUrl : bot.photo_url);
 
-  if (!serviceNameStr || !personaNameStr || !promptStr) {
+  if (!serviceNameStr || !personaNameStr) {
     const error = res.locals.t('validation.botRequiredFields');
     return res.status(400).render('bot-edit', {
       mcpCatalog,
@@ -167,7 +173,8 @@ router.post('/:id', upload.single('photo'), (req, res) => {
         rag_urls: ragUrls ? ragUrls.split('\n').filter(Boolean) : [],
         mcp_servers: mcpServers ? (Array.isArray(mcpServers) ? mcpServers : [mcpServers]) : [],
         photo_url: finalPhotoUrl,
-        minimum_age: minimumAge ? parseInt(minimumAge, 10) : 1
+        minimum_age: minimumAge ? parseInt(minimumAge, 10) : 1,
+        tones: tonesArr
       }
     });
   }
@@ -181,6 +188,7 @@ router.post('/:id', upload.single('photo'), (req, res) => {
     prompt:              promptStr,
     rag_urls:    ragUrls    ? ragUrls.split('\n').filter(Boolean) : [],
     mcp_servers: mcpServers ? (Array.isArray(mcpServers) ? mcpServers : [mcpServers]) : [],
+    tones:       tonesArr,
     photo_url:   finalPhotoUrl,
     minimum_age: minimumAge ? parseInt(minimumAge, 10) : 1,
     updated_at: new Date().toISOString(),

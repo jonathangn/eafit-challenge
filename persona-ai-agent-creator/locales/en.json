@@ -84,7 +84,7 @@
     "registerFail": "Could not create account.",
     "loginInvalid": "Invalid credentials.",
     "botNotFound": "Bot not found",
-    "botRequiredFields": "Persona, service, and prompt fields are required.",
+    "botRequiredFields": "Persona and service fields are required.",
     "botAtLeastOneMcp": "Select at least one MCP server."
   },
   "bots": {
@@ -172,7 +172,19 @@
     "knowledgeHintOriginal": "Example: your FAQ page, public docs, service policies.",
     "restoreMessage": "Resuming where you left off",
     "invalidFileType": "Please select an image file (JPEG, PNG, WebP).",
-    "invalidFileSize": "File too large. Maximum size is 5 MB."
+    "invalidFileSize": "File too large. Maximum size is 5 MB.",
+    "advancedServiceSettings": "Advanced Service & Domain Settings (Optional)",
+    "toneSelectLabel": "Personality Tone (Optional)",
+    "toneFriendly": "😊 Friendly & Empathetic",
+    "toneProfessional": "👔 Professional & Formal",
+    "toneConcise": "⚡ Concise & Direct",
+    "toneCreative": "🎨 Creative & Expressive",
+    "superpowersLabel": "Active Superpowers",
+    "superpowersTooltip": "Give your agent the ability to check the live weather, search Wikipedia, or read websites in real-time.",
+    "websiteContextLabel": "Provide Website Context",
+    "websiteContextTooltip": "Paste links to your business website or FAQ page. The agent will read these pages to answer specific customer questions accurately.",
+    "advancedDeveloperPrompts": "Advanced Developer Prompts (Optional)",
+    "aiPersonalityPlaceholderSimplified": "Optional: Write custom instructions for your AI's personality. If left blank, we will automatically generate a custom personality based on your selected tone, name, and role!"
   },
   "bot": {
     "myBots": "My AI Bots",

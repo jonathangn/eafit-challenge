@@ -84,7 +84,7 @@
     "registerFail": "No se pudo crear la cuenta.",
     "loginInvalid": "Credenciales inválidas.",
     "botNotFound": "Bot no encontrado",
-    "botRequiredFields": "Los campos de persona, servicio y prompt son obligatorios.",
+    "botRequiredFields": "Los campos de persona y servicio son obligatorios.",
     "botAtLeastOneMcp": "Selecciona al menos un servicio MCP."
   },
   "bots": {
@@ -172,7 +172,19 @@
     "knowledgeHintOriginal": "Ejemplo: tu FAQ, documentación pública, políticas del servicio.",
     "restoreMessage": "Continuando desde donde lo dejaste",
     "invalidFileType": "Selecciona un archivo de imagen (JPEG, PNG, WebP).",
-    "invalidFileSize": "Archivo demasiado grande. El tamaño máximo es 5 MB."
+    "invalidFileSize": "Archivo demasiado grande. El tamaño máximo es 5 MB.",
+    "advancedServiceSettings": "Configuración Avanzada de Servicio y Dominio (Opcional)",
+    "toneSelectLabel": "Tono de la Personalidad (Opcional)",
+    "toneFriendly": "😊 Amigable y Empático",
+    "toneProfessional": "👔 Profesional y Formal",
+    "toneConcise": "⚡ Conciso y Directo",
+    "toneCreative": "🎨 Creativo y Expresivo",
+    "superpowersLabel": "Superpoderes Activos",
+    "superpowersTooltip": "Dale a tu agente la capacidad de consultar el clima en vivo, buscar en Wikipedia o leer sitios web en tiempo real.",
+    "websiteContextLabel": "Proporcionar Contexto de Sitio Web",
+    "websiteContextTooltip": "Pega enlaces al sitio web de tu negocio o página de preguntas frecuentes. El agente leerá estas páginas para responder preguntas específicas de los clientes de manera precisa.",
+    "advancedDeveloperPrompts": "Prompts Avanzados de Desarrollador (Opcional)",
+    "aiPersonalityPlaceholderSimplified": "Opcional: Escribe instrucciones personalizadas para la personalidad de tu IA. ¡Si se deja en blanco, generaremos automáticamente una personalidad personalizada basada en tu tono, nombre y rol seleccionados!"
   },
   "bot": {
     "myBots": "Mis Agentes IA",
