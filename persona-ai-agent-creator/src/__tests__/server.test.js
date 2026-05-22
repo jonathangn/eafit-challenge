@@ -63,6 +63,37 @@ describe('Server-level routes', () => {
     });
   });
 
+  describe('Automatic browser language detection', () => {
+    it('detects es from Accept-Language when no lang cookie is set', async () => {
+      const res = await request(app)
+        .get('/login')
+        .set('Accept-Language', 'es-ES,es;q=0.9,en;q=0.8');
+      expect(res.status).toBe(200);
+      const cookies = res.headers['set-cookie'] || [];
+      expect(cookies.some(c => c.startsWith('lang=es'))).toBe(true);
+    });
+
+    it('detects en from Accept-Language when no lang cookie is set', async () => {
+      const res = await request(app)
+        .get('/login')
+        .set('Accept-Language', 'en-US,en;q=0.9,es;q=0.8');
+      expect(res.status).toBe(200);
+      const cookies = res.headers['set-cookie'] || [];
+      expect(cookies.some(c => c.startsWith('lang=en'))).toBe(true);
+    });
+
+    it('respects existing lang cookie over Accept-Language', async () => {
+      const res = await request(app)
+        .get('/login')
+        .set('Cookie', 'lang=es')
+        .set('Accept-Language', 'en-US,en;q=0.9');
+      expect(res.status).toBe(200);
+      const cookies = res.headers['set-cookie'] || [];
+      // lang cookie should not be overwritten since it already existed
+      expect(cookies.some(c => c.startsWith('lang='))).toBe(false);
+    });
+  });
+
   describe('GET /set-lang/:lang', () => {
     it('sets lang cookie to es', async () => {
       const res = await request(app)

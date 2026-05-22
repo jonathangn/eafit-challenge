@@ -128,6 +128,8 @@ router.get('/:id', (req, res) => {
 
   res.render('bot-view', {
     title: bot.service_name,
+    description: `${bot.persona_profession} - ${bot.persona_description || ''}`.substring(0, 160).trim(),
+    image: bot.photo_url || null,
     bot,
     agentUrl: `https://${bot.slug}.${process.env.BASE_DOMAIN || 'agents.team-f.teams.eafit.testnet.verana.network'}`,
     trustChainError

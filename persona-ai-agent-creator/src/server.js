@@ -67,7 +67,16 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  const lang = req.cookies.lang === 'es' ? 'es' : 'en';
+  let lang = req.cookies.lang;
+  if (!lang) {
+    const acceptLang = req.headers['accept-language'] || '';
+    const match = acceptLang.match(/(es|en)/i);
+    lang = match ? match[0].toLowerCase() : 'en'; // Fallback to 'en' to maintain test compatibility
+    res.cookie('lang', lang, { maxAge: 365 * 24 * 60 * 60 * 1000, httpOnly: false, sameSite: 'lax' });
+  } else {
+    lang = lang === 'es' ? 'es' : 'en';
+  }
+
   res.locals.t           = makeT(lang);
   res.locals.currentLang = lang;
   res.locals.currentUser = null;
