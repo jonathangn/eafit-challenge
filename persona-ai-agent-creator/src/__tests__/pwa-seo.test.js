@@ -193,14 +193,14 @@ describe('PWA & Dynamic SEO Integration Tests', () => {
   });
 
   describe('4. Performance and Caching Optimizations', () => {
-    it('contains async web font loading preloads and noscript fallbacks', async () => {
+    it('contains high-performance direct font preloads and async web font loading preloads', async () => {
       const res = await request(app).get('/login');
       expect(res.status).toBe(200);
       expect(res.text).toContain('rel="preload"');
-      expect(res.text).toContain('as="style"');
-      expect(res.text).toContain('onload="this.onload=null;this.rel=\'stylesheet\'"');
-      expect(res.text).toContain('family=Material+Symbols+Outlined');
-      expect(res.text).toContain('display=block');
+      expect(res.text).toContain('as="font"');
+      expect(res.text).toContain('type="font/woff2"');
+      expect(res.text).toContain('kJEPBvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzBwG-RpA6RzaxHMPdY40KH8nGzv3fzfVJO1Q.woff2');
+      expect(res.text).toContain('crossorigin');
     });
 
     it('injects assetVersion into CSS output link instead of dynamic timestamp', async () => {

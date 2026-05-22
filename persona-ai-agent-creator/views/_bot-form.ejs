@@ -6,7 +6,8 @@
 </div>
 
 <div class="px-margin-mobile py-stack-md pb-36">
-    <!-- Progress Stepper -->
+    <!-- Progress Stepper Sentinel (to safely cache document-relative top position without scroll-bound layout queries) -->
+    <div id="stepper-sentinel" class="h-0 -mb-0" aria-hidden="true"></div>
     <div class="max-w-xl mx-auto mb-10 space-y-base sticky top-24 z-30 glass-bar rounded-2xl px-4 py-3" id="stepper-card">
         <!-- Outward Fillets for Stuck Header Banner Effect -->
         <div class="stepper-fillet-left" aria-hidden="true"></div>
@@ -762,22 +763,41 @@
 
         // Progressive Stepper Scroll-Driven Interaction (Inward to Outward Curvature Fillets)
         (() => {
+            const sentinel = document.getElementById('stepper-sentinel');
             const stepper = document.getElementById('stepper-card');
-            if (!stepper) return;
+            if (!stepper || !sentinel) return;
             
+            // Cache the resting absolute vertical position relative to the document
+            let stepperDocumentTop = 0;
+            
+            const updateStepperTop = () => {
+                // Use sentinel to obtain the true document-relative top position
+                // of the stepper regardless of whether it is stuck or not.
+                stepperDocumentTop = sentinel.getBoundingClientRect().top + window.scrollY;
+            };
+
+            let lastProgress = null;
+
             const handleScroll = () => {
-                const rect = stepper.getBoundingClientRect();
+                const scrollY = window.scrollY;
+                const rectTop = stepperDocumentTop - scrollY;
                 const triggerStart = 160; // scroll distance in px where progressive collapse starts
                 const triggerEnd = 96;   // header bottom sticky point in px (top-24)
                 
                 let progress = 0;
-                if (rect.top <= triggerEnd) {
+                if (rectTop <= triggerEnd) {
                     progress = 1;
-                } else if (rect.top >= triggerStart) {
+                } else if (rectTop >= triggerStart) {
                     progress = 0;
                 } else {
-                    progress = (triggerStart - rect.top) / (triggerStart - triggerEnd);
+                    progress = (triggerStart - rectTop) / (triggerStart - triggerEnd);
                 }
+                
+                // Precision clamp to 2 decimal places to avoid microscopic style updates
+                progress = Math.round(progress * 100) / 100;
+                
+                if (progress === lastProgress) return;
+                lastProgress = progress;
                 
                 // Reduce only top two corners' border-radius from 16px to 0px, keeping bottom corners at 16px
                 const maxRadius = 16;
@@ -795,8 +815,22 @@
                 }
             };
             
+            window.addEventListener('resize', () => {
+                updateStepperTop();
+                handleScroll();
+            });
+
+            // Calculate stepper Document Top after window finishes loading (fonts/styles fully resolved)
+            window.addEventListener('load', () => {
+                updateStepperTop();
+                handleScroll();
+            });
+
             window.addEventListener('scroll', handleScroll, { passive: true });
-            handleScroll(); // initial check
+            
+            // Initial calculations
+            updateStepperTop();
+            handleScroll();
         })();
     })();
 </script>
