@@ -38,8 +38,17 @@
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- High-Performance Asynchronous Web Font Loading -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet" />
+    </noscript>
+    
+    <!-- Render-safe Material Icons with blocked display to prevent unstyled text flashes (FOUT) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet" />
+    </noscript>
     
     <link rel="manifest" href="/manifest.json" />
     <script>
@@ -53,7 +62,11 @@
       }
     </script>
 
-    <link rel="stylesheet" href="/css/output.css?v=<%= (Date.now() / 10000).toFixed(0) %>" />
+    <% if (typeof inlineCss !== 'undefined' && inlineCss) { %>
+      <style><%- inlineCss %></style>
+    <% } else { %>
+      <link rel="stylesheet" href="/css/output.css?v=<%= assetVersion %>" />
+    <% } %>
     <script>
       // Persistent Theme Logic - Auto-detect system preference if not set
       const savedTheme = localStorage.getItem('theme');

@@ -47,7 +47,9 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
 
   // Static Assets: Cache-First
+  const isGoogleFont = url.host === 'fonts.googleapis.com' || url.host === 'fonts.gstatic.com';
   const isStaticAsset = (
+    isGoogleFont ||
     url.pathname.startsWith('/css/') ||
     url.pathname.startsWith('/icons/') ||
     url.pathname === '/manifest.json' ||

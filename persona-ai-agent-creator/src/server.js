@@ -1,4 +1,5 @@
 'use strict';
+const fs         = require('fs');
 const path       = require('path');
 const crypto     = require('crypto');
 const compression = require('compression');
@@ -29,9 +30,18 @@ app.set('view cache', false);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-const STATIC_MAX_AGE = process.env.NODE_ENV === 'production' ? '7d' : '0';
+const STATIC_MAX_AGE = process.env.NODE_ENV === 'production' ? '365d' : '0';
 app.use(express.static(path.join(__dirname, '..', 'public'), { maxAge: STATIC_MAX_AGE }));
 app.use('/uploads', express.static(path.resolve(uploadDir), { maxAge: '1d' }));
+
+let inlineCss = null;
+if (process.env.NODE_ENV === 'production') {
+  try {
+    inlineCss = fs.readFileSync(path.join(__dirname, '..', 'public', 'css', 'output.css'), 'utf8');
+  } catch (err) {
+    logger.error('Failed to read output.css for inlining:', err);
+  }
+}
 
 function generateCsrfToken() {
   return crypto.randomBytes(32).toString('hex');
@@ -85,6 +95,8 @@ app.use((req, res, next) => {
   res.locals.currentLang = lang;
   res.locals.currentUser = null;
   res.locals.canonicalUrl = `https://persona.team-f.teams.eafit.testnet.verana.network${req.originalUrl}`;
+  res.locals.assetVersion = process.env.NODE_ENV === 'production' ? '1.0.0' : String(Date.now());
+  res.locals.inlineCss = inlineCss;
 
   const token = req.cookies.authToken;
   if (token) {

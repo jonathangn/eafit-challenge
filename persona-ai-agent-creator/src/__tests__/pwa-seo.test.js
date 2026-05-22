@@ -191,4 +191,61 @@ describe('PWA & Dynamic SEO Integration Tests', () => {
       expect(res2.status).toBe(200);
     });
   });
+
+  describe('4. Performance and Caching Optimizations', () => {
+    it('contains async web font loading preloads and noscript fallbacks', async () => {
+      const res = await request(app).get('/login');
+      expect(res.status).toBe(200);
+      expect(res.text).toContain('rel="preload"');
+      expect(res.text).toContain('as="style"');
+      expect(res.text).toContain('onload="this.onload=null;this.rel=\'stylesheet\'"');
+      expect(res.text).toContain('family=Material+Symbols+Outlined');
+      expect(res.text).toContain('display=block');
+    });
+
+    it('injects assetVersion into CSS output link instead of dynamic timestamp', async () => {
+      const res = await request(app).get('/login');
+      // In test mode, it should be a numeric timestamp since process.env.NODE_ENV is 'test', which is not production
+      expect(res.text).toMatch(/\/css\/output.css\?v=\d+/);
+    });
+
+    it('serves static assets with 1 year cache max-age in production environment', async () => {
+      // Temporarily switch to production environment and reload server
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'production';
+      
+      delete require.cache[require.resolve('../server')];
+      const prodApp = require('../server');
+
+      const res = await request(prodApp).get('/manifest.json');
+      expect(res.status).toBe(200);
+      expect(res.headers['cache-control']).toContain('max-age=31536000'); // 365 days
+
+      // Restore test environment
+      process.env.NODE_ENV = originalEnv;
+      delete require.cache[require.resolve('../server')];
+    });
+
+    it('inlines CSS in production mode and falls back to standard link in test/dev modes', async () => {
+      // 1. Test Mode (should use external link)
+      const resTest = await request(app).get('/login');
+      expect(resTest.text).toContain('href="/css/output.css?v=');
+      expect(resTest.text).not.toContain('<style>html'); // Should not inline the stylesheet
+
+      // 2. Production Mode (should inline the CSS)
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'production';
+      
+      delete require.cache[require.resolve('../server')];
+      const prodApp = require('../server');
+
+      const resProd = await request(prodApp).get('/login');
+      expect(resProd.text).not.toContain('href="/css/output.css');
+      expect(resProd.text).toContain('<style>');
+      
+      // Restore test environment
+      process.env.NODE_ENV = originalEnv;
+      delete require.cache[require.resolve('../server')];
+    });
+  });
 });
