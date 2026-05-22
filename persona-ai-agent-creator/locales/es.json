@@ -281,8 +281,11 @@
     "activityTitle": "Actividad de Despliegue"
   },
   "error": {
+    "code": "CÓDIGO",
     "pageNotFound": "Página no encontrada",
     "internalError": "Error interno del servidor",
+    "accessDenied": "Acceso restringido",
+    "rateLimitTitle": "Límite de solicitudes excedido",
     "goHome": "Ir a Inicio"
   },
   "mcp": {

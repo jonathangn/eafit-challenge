@@ -281,8 +281,11 @@
     "activityTitle": "Deployment Activity"
   },
   "error": {
+    "code": "CODE",
     "pageNotFound": "Page not found",
     "internalError": "Internal server error",
+    "accessDenied": "Access restricted",
+    "rateLimitTitle": "Rate limit exceeded",
     "goHome": "Go Home"
   },
   "mcp": {
