@@ -71,7 +71,8 @@
     "verifySuccess": "¡Tu cuenta ha sido verificada con éxito! Ya puedes acceder a tu panel de control.",
     "verifyLinkReady": "Servicio de correo no disponible. Usa el enlace de abajo para verificar tu cuenta:",
     "verifyAccountBtn": "Verificar mi cuenta →",
-    "resetLinkBtn": "Restablecer mi contraseña →"
+    "resetLinkBtn": "Restablecer mi contraseña →",
+    "rateLimitExceeded": "Demasiadas solicitudes de autenticación desde esta IP. Por favor, intente de nuevo más tarde."
   },
   "validation": {
     "registerRequired": "Correo, nombre y contraseña son obligatorios.",

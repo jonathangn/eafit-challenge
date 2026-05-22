@@ -71,7 +71,8 @@
     "verifySuccess": "Your account has been successfully verified! You can now access your dashboard.",
     "verifyLinkReady": "Email service unavailable. Use the link below to verify your account:",
     "verifyAccountBtn": "Verify my account →",
-    "resetLinkBtn": "Reset my password →"
+    "resetLinkBtn": "Reset my password →",
+    "rateLimitExceeded": "Too many authentication attempts from this IP. Please try again later."
   },
   "validation": {
     "registerRequired": "Email, name and password are required.",

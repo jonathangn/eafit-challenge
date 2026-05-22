@@ -68,12 +68,32 @@ describe('Security Features', () => {
       expect(res.headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
     });
 
+    it('includes Content-Security-Policy header', async () => {
+      const res = await request(app).get('/login');
+      expect(res.headers['content-security-policy']).toBeDefined();
+      expect(res.headers['content-security-policy']).toContain("default-src 'self'");
+    });
+
+    it('includes Strict-Transport-Security header in production', async () => {
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'production';
+      delete require.cache[require.resolve('../server')];
+      const prodApp = require('../server');
+
+      const res = await request(prodApp).get('/login');
+      expect(res.headers['strict-transport-security']).toBeDefined();
+      expect(res.headers['strict-transport-security']).toContain('max-age=31536000');
+
+      process.env.NODE_ENV = originalEnv;
+    });
+
     it('security headers present on all routes', async () => {
       const routes = ['/login', '/register', '/bots'];
       for (const route of routes) {
         const res = await request(app).get(route).set('Cookie', agentCookie);
         expect(res.headers['x-content-type-options']).toBe('nosniff');
         expect(res.headers['x-frame-options']).toBe('SAMEORIGIN');
+        expect(res.headers['content-security-policy']).toBeDefined();
       }
     });
   });
@@ -188,6 +208,64 @@ describe('Security Features', () => {
         .type('form')
         .send({});
       expect(res.status).toBe(400);
+    });
+  });
+
+  describe('Rate Limiting', () => {
+    it('sets rate limit headers and blocks when exceeding limits', () => {
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'production';
+      
+      const { authRateLimiter, authRateLimiterCache } = require('../middlewares/rateLimiter');
+      authRateLimiterCache.clear();
+      
+      const ip = '127.0.0.9';
+      const req = {
+        headers: {},
+        socket: { remoteAddress: ip },
+        originalUrl: '/login'
+      };
+      
+      const headers = {};
+      let statusValue = 200;
+      let renderedTemplate = null;
+      let renderArgs = null;
+      
+      const res = {
+        setHeader(name, val) {
+          headers[name] = val;
+        },
+        status(code) {
+          statusValue = code;
+          return this;
+        },
+        render(tpl, args) {
+          renderedTemplate = tpl;
+          renderArgs = args;
+        },
+        locals: {
+          t: (key) => key
+        }
+      };
+      
+      // Let's call it 20 times (under limit)
+      for (let i = 0; i < 20; i++) {
+        let nextCalled = false;
+        authRateLimiter(req, res, () => { nextCalled = true; });
+        expect(nextCalled).toBe(true);
+        expect(headers['X-RateLimit-Limit']).toBe(20);
+        expect(headers['X-RateLimit-Remaining']).toBe(20 - (i + 1));
+      }
+      
+      // 21st call should trigger rate limit block (status 429)
+      let nextCalledAfterLimit = false;
+      authRateLimiter(req, res, () => { nextCalledAfterLimit = true; });
+      expect(nextCalledAfterLimit).toBe(false);
+      expect(statusValue).toBe(429);
+      expect(renderedTemplate).toBe('error');
+      
+      process.env.NODE_ENV = originalEnv;
+      authRateLimiterCache.clear();
     });
   });
 });

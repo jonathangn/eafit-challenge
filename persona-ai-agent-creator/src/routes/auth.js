@@ -8,7 +8,10 @@ const db        = require('../db/sqlite');
 const logger    = require('../services/logger');
 const { jwtSecret } = require('../config');
 const { sendMail, getEmailTemplate } = require('../services/email');
+const { authRateLimiter } = require('../middlewares/rateLimiter');
 const router    = express.Router();
+
+router.use(authRateLimiter);
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
