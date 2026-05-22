@@ -51,7 +51,7 @@ function validateCsrf(req, res, next) {
   if (process.env.NODE_ENV === 'test') return next();
   if (req.method !== 'POST') return next();
   const cookieToken = req.cookies['csrf-token'];
-  const bodyToken   = req.body && req.body._csrf;
+  const bodyToken   = (req.body && req.body._csrf) || (req.query && req.query._csrf) || req.headers['x-csrf-token'];
   if (!cookieToken || !bodyToken || cookieToken !== bodyToken) {
     return res.status(403).render('error', { message: 'Invalid or missing CSRF token', status: 403 });
   }

@@ -27,7 +27,7 @@
         </div>
     <% } %>
 
-    <form id="botForm" action="<%= formAction %>" method="post" enctype="multipart/form-data" class="max-w-xl mx-auto">
+    <form id="botForm" action="<%= formAction %><%= formAction.includes('?') ? '&' : '?' %>_csrf=<%= csrfToken %>" method="post" enctype="multipart/form-data" class="max-w-xl mx-auto">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <!-- Step 1: Persona Identity -->
         <div class="wizard-step space-y-stack-md animate-in fade-in slide-in-from-bottom-4 duration-500" data-step="1">
@@ -701,21 +701,6 @@
             }
         };
 
-        window.saveWizardState = () => {
-            const form = document.getElementById('botForm');
-            if (!form) return true;
-            try {
-                const data = new FormData(form);
-                const state = { step: currentStep, values: {}, mcps: [], botId: currentBotId };
-                for (const [key, value] of data.entries()) {
-                    if (key !== 'photo' && key !== '_csrf' && key !== 'tones') continue;
-                    state.values[key] = value;
-                }
-                document.querySelectorAll('input[name="mcpServers"]:checked').forEach(cb => state.mcps.push(cb.value));
-                sessionStorage.setItem('wizardState', JSON.stringify(state));
-            } catch (e) {}
-            return true;
-        };
 
         window.addEventListener('beforeunload', window.saveWizardState);
 
