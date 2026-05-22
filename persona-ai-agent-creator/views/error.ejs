@@ -14,6 +14,9 @@
   } else if (status === 429) {
     errorTitle = t('error.rateLimitTitle');
     glowColor = 'bg-secondary';
+  } else if (status === 410) {
+    errorTitle = t('error.botGone');
+    glowColor = 'bg-secondary';
   } else if (status === 500) {
     errorTitle = t('error.internalError');
     glowColor = 'bg-error';
@@ -53,6 +56,13 @@
                         <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" class="opacity-40" />
                         <path d="M12 6V12L15.5 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         <path d="M12 2V4M12 20V22M4 12H2M20 12H22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                <% } else if (status === 410) { %>
+                    <!-- 410: Uninstalled / Vanished entity -->
+                    <svg class="w-28 h-28 text-secondary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4" class="opacity-50" />
+                        <path d="M9.5 9.5 L14.5 14.5 M14.5 9.5 L9.5 14.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                        <path d="M8 19 L16 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="opacity-80" />
                     </svg>
                 <% } else { %>
                     <!-- 500 / Others: Alert Triangle with pulsating core -->

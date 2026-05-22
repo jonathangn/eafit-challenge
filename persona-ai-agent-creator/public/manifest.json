@@ -1,0 +1,25 @@
+{
+  "short_name": "Persona AI",
+  "name": "Persona Studio AI Agent Creator",
+  "description": "Crea y despliega tus agentes de Inteligencia Artificial personalizados con súper poderes MCP.",
+  "start_url": "/",
+  "background_color": "#05030e",
+  "theme_color": "#0d0a1b",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ]
+}

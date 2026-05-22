@@ -137,6 +137,93 @@ function requireAuth(req, res, next) {
 
 app.use('/bots', requireAuth, botRoutes);
 
+// Dynamic XML Sitemap Generator
+app.get('/sitemap.xml', (req, res) => {
+  const bots = db.filter('bots', b => b.publish_status === 'published' || b.publish_status === 'applied');
+  
+  res.header('Content-Type', 'application/xml');
+  
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Homepage -->
+  <url>
+    <loc>https://persona.team-f.teams.eafit.testnet.verana.network/</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://persona.team-f.teams.eafit.testnet.verana.network/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://persona.team-f.teams.eafit.testnet.verana.network/set-lang/es" />
+  </url>
+
+  <!-- Auth Pages -->
+  <url>
+    <loc>https://persona.team-f.teams.eafit.testnet.verana.network/login</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://persona.team-f.teams.eafit.testnet.verana.network/register</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Main App Pages (require auth) -->
+  <url>
+    <loc>https://persona.team-f.teams.eafit.testnet.verana.network/bots</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://persona.team-f.teams.eafit.testnet.verana.network/bots/new</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+
+  for (const bot of bots) {
+    const lastMod = bot.updated_at ? bot.updated_at.split('T')[0] : '2026-05-21';
+    xml += `
+  <url>
+    <loc>https://persona.team-f.teams.eafit.testnet.verana.network/public-agents/${bot.id}</loc>
+    <lastmod>${lastMod}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+  }
+
+  xml += `\n</urlset>\n`;
+  res.send(xml);
+});
+
+// Public Showcase Route (Unauthenticated)
+app.get('/public-agents/:id', (req, res) => {
+  const bot = db.find('bots', b => b.id === req.params.id);
+  if (!bot) {
+    return res.status(404).render('error', { 
+      message: res.locals.t('error.botNotFound'), 
+      status: 404 
+    });
+  }
+
+  if (bot.publish_status !== 'published' && bot.publish_status !== 'applied') {
+    return res.status(410).render('error', { 
+      message: res.locals.t('error.botGone'), 
+      status: 410 
+    });
+  }
+
+  res.render('bot-public', {
+    bot,
+    title: bot.persona_name || bot.service_name || 'Agente IA',
+    description: bot.persona_description || bot.service_description || 'Agente IA personalizado en Persona Studio',
+    image: bot.photo_url || null
+  });
+});
+
 app.use((_req, res) => {
   res.status(404).render('error', { message: 'Page not found', status: 404 });
 });

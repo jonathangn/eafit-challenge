@@ -286,6 +286,8 @@
     "internalError": "Error interno del servidor",
     "accessDenied": "Acceso restringido",
     "rateLimitTitle": "Límite de solicitudes excedido",
+    "botNotFound": "Agente no encontrado",
+    "botGone": "Este agente ya no está disponible públicamente",
     "goHome": "Ir a Inicio"
   },
   "mcp": {
