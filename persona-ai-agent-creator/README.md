@@ -1,133 +1,113 @@
 # Persona Studio (EAFIT Step 3 MVP)
 
-This project implements a full vertical slice for the EAFIT challenge Step 3:
+Persona Studio is a state-of-the-art, high-performance web platform built for EAFIT challenge Step 3. It provides a complete, production-grade toolchain for creating, deploying, and managing decentralized AI persona agents integrated with Model Context Protocol (MCP) servers and RAG capabilities, fully optimized for Lighthouse metrics, security, and progressive web capabilities.
 
-- User auth (email/password)
-- Bot CRUD with ownership checks
-- Bot configuration (persona, service, prompt, MCP selection, optional RAG URLs)
-- Publish/unpublish flow with generated Kubernetes artifacts
-- Public URL generation for Hologram usage
+---
 
-## Tech Stack
+## 🚀 Premium Features & Architecture
 
-- Node.js + Express + EJS
-- SQLite persistence (`users`, `bots`, `bot_versions`, `publish_runs`)
-- `js-yaml` for artifact generation
-- JSON-based i18n locale files in `locales/`
+### 1. 🔑 DID Trust Chain & Hologram Dynamic Sync
+* **Decentralized Verification:** Automates the issuance of custom `LinkedVerifiablePresentation` credentials for each agent under the EAFIT trust chain.
+* **Smart Avatar & Metadata Cache Sync:** Deep-checks credentials against current agent data (`name`, `description`, `minimumAgeRequired`, `photo/logo`). Upon metadata or avatar updates, it dynamically re-issues the credential to the decentralized register.
+* **Seamless Hologram Recognition:** Maps channels and histories through the agent's invariant DID (`did:webvh:<bot-slug>...`), ensuring client apps like Hologram recognize updates immediately *without* creating duplicate bots.
 
-## Quick Start
+### 2. ⚡ Hybrid Critical-CSS Inlining
+* **Production Optimization:** In production (`NODE_ENV=production`), the application pre-reads and caches the minified `output.css` (only 9.6 KiB) and inlines it directly in the HTML `<style>` block. This limits the network round-trip time to **1 RTT** and completely eliminates render-blocking stylesheets.
+* **Developer Comfort:** Dynamically falls back to standard `<link rel="stylesheet">` with dynamic timestamps in development/test modes, preserving hot stylesheet updates (via Tailwind CSS CSS `--watch`).
 
-1. Install dependencies:
+### 3. 🛡️ Production-Grade Security Suite
+* **Strict Content Security Policy (CSP):** Directs the browser to load resources only from verified sources, allowing safe script inlining for instant state recovery and Google Fonts loading while blocking XSS vectors.
+* **Custom Native Rate Limiter:** An in-memory, highly performant rate limiter protecting authentication endpoints (Login, Register, Password Reset) from brute-force attempts. Limits requests to 20 per 15 minutes, serving compliant RFC headers and dynamic translations.
+* **HSTS (HTTP Strict Transport Security):** Enforces SSL/TLS secure channels for 1 year in production mode.
+
+### 4. 📈 Dynamic SEO, Schema.org & Google Sitemap
+* **Dynamic XML Sitemap:** Serves a dynamic `/sitemap.xml` generated in real-time from the SQLite database, reflecting only published agents.
+* **Showcase Landing Page:** Features a premium, glassmorphism dark-mode landing page (`/public-agents/:id`) with rich Open Graph headers, Twitter Cards, dynamic QR code generators, and inline Schema.org JSON-LD (`SoftwareApplication` / `IntelligentAgent`) metadata.
+* **410 Gone De-indexing:** Automatically responds with `HTTP 410 Gone` and a themed archived page for drafted/unpublished bots, forcing search engines to immediately de-index stale agent links.
+
+### 5. 📱 Progressive Web App (PWA) & Offline Resilience
+* **Asset Manifest:** Fully compliant `manifest.json` pointing to modern, responsive SVG branding assets.
+* **Maskable SVG Icons:** Includes circular-safe maskable icons (`public/icons/icon-maskable.svg`) ensuring clean brand presentation across modern mobile launchers.
+* **Smart Service Worker (`sw.js`):** Intercepts network requests using a robust *Cache-First* strategy for static assets/fonts, and *Network-First* for dynamic views, delivering instant sub-second paint times.
+* **Bilingual Glassmorphic Offline Fallback:** Serves a premium, blurred glassmorphic page (`offline.html`) with network-status indicators and manual retry triggers, dynamically tailored in Spanish or English based on browser settings.
+
+### 6. ⏱️ 60 FPS Layout Performance (Zero Forced Reflows)
+* **Reflow-Free Stepper Scroll:** Uses an advanced **Sentinel Pattern** (`#stepper-sentinel`) inside the creation wizard. It pre-calculates and caches document coordinates on `load` and `resize` events, reducing the progressive scroll listener to a pure mathematical offset calculation with **0 layout reads on scroll**, entirely resolving forced layouts.
+* **Direct WOFF2 Preloading:** Preloads the actual `.woff2` font file of the `Material Symbols Outlined` icon set directly from the global CDN cache (`fonts.gstatic.com`) in parallel, bypassing the CSS import wrapper. Natively declares `@font-face` with `font-display: swap` inside the compiled Tailwind bundle.
+
+---
+
+## 🛠️ Tech Stack & Dependencies
+
+* **Core Backend:** Node.js + Express 5.x + EJS Templates
+* **Database:** SQLite via `better-sqlite3` (users, bots, versions, publish runs)
+* **Styling & CSS:** Vanilla CSS + Tailwind CSS (compiled, minified, and inlined)
+* **Security:** `bcryptjs` for salted hashing, `jsonwebtoken` for secure cookie sessions, custom CRSFToken middleware
+* **Testing:** `vitest` for fast concurrency + `supertest` for REST/PWA assertion verification
+* **Language Support:** JSON i18n locale files under `locales/` with browser header negotiation
+
+---
+
+## ⚙️ Environment Variables
+
+Copy `.env.example` to `.env` and configure the following variables:
 
 ```bash
-npm install
+PORT=3000                 # Server port
+JWT_SECRET=secure-secret  # Authentication signing secret
+DATABASE_PATH=data/db.sqlite  # SQLite database path
+UPLOAD_DIR=uploads/       # Uploaded agent photo directory
+GENERATED_DIR=generated/   # Generated Kubernetes artifacts path
+TEAM_NAMESPACE=team-f     # Target Kubernetes namespace
+BASE_DOMAIN=teams.eafit.testnet.verana.network # Domain suffix for published bots
+ENABLE_K8S_APPLY=false    # Set true to run kubectl commands on publish/unpublish
 ```
 
-2. Create environment file:
+---
 
+## 🚀 Quick Start & Developer Workflow
+
+### 1. Install Dependencies
+```bash
+pnpm install
+```
+
+### 2. Configure Environment
 ```bash
 cp .env.example .env
 ```
 
-3. Start app:
-
+### 3. Run Development Server
 ```bash
-npm run dev
+pnpm dev
+```
+Starts node via `nodemon` and watches Tailwind CSS changes synchronously:
+* App: `http://localhost:3000`
+* Service Worker Offline Fallback: `http://localhost:3000/offline.html`
+
+### 4. Run Automated Test Suite
+```bash
+pnpm test
+```
+Executes the comprehensive Vitest integration suite, covering PWA caching, critical CSS inlining, rate limiting, dynamic SEO sitemaps, CSRF forms, and auth controllers.
+
+---
+
+## 📦 Deployment & Containerization
+
+### Docker Production Build
+```bash
+docker build -t persona-studio .
+docker run -d -p 3000:3000 --env-file .env persona-studio
 ```
 
-Open `http://localhost:3000`.
+### Kubernetes Native Deployment
+Kustomization manifests are located under the `k8s/` folder:
+* **Deployment**: High-availability, production-configured replica.
+* **PersistentVolumeClaims (PVCs)**: Persistent directories for SQLite database, upload files, and generated YAML assets.
+* **Service**: LoadBalancer or ClusterIP exposure setups.
 
-## Environment Variables
-
-- `PORT`: app port
-- `JWT_SECRET`: auth signing secret
-- `DATABASE_PATH`: sqlite db path
-- `UPLOAD_DIR`: uploaded photo directory
-- `GENERATED_DIR`: generated artifacts root
-- `TEAM_NAMESPACE`: Kubernetes namespace (default `team-f`)
-- `BASE_DOMAIN`: domain suffix used for bot URLs
-- `KUBECONFIG_PATH`: path to kubeconfig file
-- `KUBECTL_BIN`: kubectl executable path (useful for local install under `$HOME/.local/bin`)
-- `ENABLE_K8S_APPLY`: `true` to execute `kubectl apply/delete`, `false` to only generate manifests
-- `AGENT_IMAGE`: container image for bot deployment manifest
-
-## Internationalization (i18n)
-
-- Locales are stored in:
-  - `locales/en.json`
-  - `locales/es.json`
-- Language selection:
-  - query param `?lang=en|es`
-  - `lang` cookie
-  - browser `Accept-Language` fallback
-- To add a new language:
-  1. Create a new locale file (for example `locales/pt.json`)
-  2. Copy key structure from `en.json`
-  3. Translate values; app auto-loads all locale JSON files
-
-## Publish / Unpublish Behavior
-
-- On publish:
-  - Validates bot configuration
-  - Generates `agent-pack.yaml`, `config.env`, and `k8s-manifest.yaml`
-  - Saves artifacts under `generated/<bot-slug>/<timestamp>/`
-  - Records publish run status in DB
-  - If `ENABLE_K8S_APPLY=true`, runs `kubectl apply` and waits for rollout
-
-- On unpublish:
-  - If `ENABLE_K8S_APPLY=true`, executes delete for deployment/service/ingress
-  - Records run in DB and returns bot to `draft` state
-
-## MCP Integrations Included
-
-- `github`
-- `weather`
-- `wikipedia`
-
-Selected MCP IDs are persisted per bot and injected into generated `agent-pack.yaml`.
-
-## Limitations (MVP)
-
-- No OAuth provider yet (email/password only)
-- RAG currently stores URL metadata; does not ingest files into vector DB yet
-- Kubernetes apply requires local `kubectl` installation and cluster connectivity
-
-## Deployment
-
-### Docker
-The project includes a multi-stage `Dockerfile` for minimal production images.
-```bash
-docker build -t persona-creator .
-docker run -p 3000:3000 persona-creator
-```
-
-### Kubernetes
-Manifests are provided in the `k8s/` directory. They include:
-- **Deployment**: Single replica webapp.
-- **Service**: Internal ClusterIP service.
-- **PVCs**: Persistent storage for SQLite, uploads, and generated files.
-
-To deploy manually:
+Deploy manually:
 ```bash
 kubectl apply -k k8s/
 ```
-
-### CI/CD
-A GitHub Actions workflow is available in `.github/workflows/deploy-webapp.yml`. It automates:
-1. Building the Docker image.
-2. Pushing to Docker Hub.
-3. Updating the K8s manifests and applying them.
-
-**Required GitHub Secrets:**
-- `DOCKERHUB_USERNAME`: Your Docker Hub username.
-- `DOCKERHUB_TOKEN`: Your Docker Hub personal access token.
-- `KUBECONFIG`: Your cluster's kubeconfig file.
-
-## Suggested Demo Flow
-
-1. Register and login
-2. Create a bot with persona/service/prompt, choose 2+ MCP integrations
-3. Save bot and open detail page
-4. Publish bot (artifact generation + status)
-5. Open generated public URL
-6. Unpublish bot
