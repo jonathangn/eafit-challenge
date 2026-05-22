@@ -572,37 +572,7 @@ async function setupTrustChain(bot, namespace, botDir) {
   if (!agentDid) throw new Error('Agent admin API did not become ready in time');
   console.log(`✅ Agent DID: ${agentDid}`);
 
-  // 2. Check if org-issued Service credential already linked
-  // (self-issued VTCs from SELF_ISSUED_VTC_* env vars should NOT match)
-  try {
-    const orgDidUrl = `https://${bot.slug}.${process.env.BASE_DOMAIN || 'agents.team-f.teams.eafit.testnet.verana.network'}/.well-known/did.json`;
-    const didDoc = await fetchJson(orgDidUrl);
-    const orgIssuer = 'organization.eafit';
-    for (const svc of (didDoc.service || [])) {
-      if (svc.type !== 'LinkedVerifiablePresentation') continue;
-      try {
-        const vp = await fetchJson(svc.serviceEndpoint, {}, 5000);
-        const vcIssuer = vp?.verifiableCredential?.[0]?.issuer || '';
-        if (vcIssuer.includes(orgIssuer)) {
-          console.log('✅ Org-issued Service credential already linked — skipping');
-          return;
-        }
-      } catch { /* VP not accessible, check next service entry */ }
-    }
-  } catch { /* DID doc not yet propagated, continue */ }
-
-  // 3. Discover Service VTJSC from ECS trust registry
-  const ecsDid   = await fetchJson(`${ECS_TR_URL}/.well-known/did.json`);
-  const vpSvc    = (ecsDid.service || []).find(s =>
-    s.type === 'LinkedVerifiablePresentation' && String(s.id).includes('service-jsc-vp'));
-  if (!vpSvc) throw new Error('Service VTJSC not found in ECS DID document');
-
-  const vp       = await fetchJson(vpSvc.serviceEndpoint);
-  const jscUrl   = vp?.verifiableCredential?.[0]?.id;
-  if (!jscUrl) throw new Error('Could not extract VTJSC URL from VP');
-  console.log(`✅ Service VTJSC: ${jscUrl}`);
-
-  // 4. Build logo data URI from uploaded photo (or default)
+  // 2. Build logo data URI from uploaded photo (or default)
   let logoDataUri = '';
   if (bot.photo_url) {
     try {
@@ -620,6 +590,51 @@ async function setupTrustChain(bot, namespace, botDir) {
       logoDataUri = `data:image/png;base64,${buf.toString('base64')}`;
     } catch { logoDataUri = ''; }
   }
+
+  // 3. Check if org-issued Service credential already linked AND matches current bot metadata
+  try {
+    const orgDidUrl = `https://${bot.slug}.${process.env.BASE_DOMAIN || 'agents.team-f.teams.eafit.testnet.verana.network'}/.well-known/did.json`;
+    const didDoc = await fetchJson(orgDidUrl);
+    const orgIssuer = 'organization.eafit';
+    for (const svc of (didDoc.service || [])) {
+      if (svc.type !== 'LinkedVerifiablePresentation') continue;
+      try {
+        const vp = await fetchJson(svc.serviceEndpoint, {}, 5000);
+        const vc = vp?.verifiableCredential?.[0];
+        const vcIssuer = vc?.issuer || '';
+        if (vcIssuer.includes(orgIssuer)) {
+          const subject = Array.isArray(vc?.credentialSubject) ? vc.credentialSubject[0] : vc?.credentialSubject;
+          const currentName = bot.persona_name || bot.service_name;
+          const currentDesc = bot.persona_description || bot.service_description || 'AI Agent created via Persona Creator';
+          const currentMinAge = bot.minimum_age || 1;
+
+          if (
+            subject &&
+            subject.name === currentName &&
+            subject.description === currentDesc &&
+            subject.logo === logoDataUri &&
+            Number(subject.minimumAgeRequired) === Number(currentMinAge)
+          ) {
+            console.log('✅ Org-issued Service credential already linked and up-to-date — skipping');
+            return;
+          } else {
+            console.log('⚠️ Metadata mismatch or outdated logo detected in existing credential. Proceeding to reissue...');
+          }
+        }
+      } catch { /* VP not accessible, check next service entry */ }
+    }
+  } catch { /* DID doc not yet propagated, continue */ }
+
+  // 4. Discover Service VTJSC from ECS trust registry
+  const ecsDid   = await fetchJson(`${ECS_TR_URL}/.well-known/did.json`);
+  const vpSvc    = (ecsDid.service || []).find(s =>
+    s.type === 'LinkedVerifiablePresentation' && String(s.id).includes('service-jsc-vp'));
+  if (!vpSvc) throw new Error('Service VTJSC not found in ECS DID document');
+
+  const vp       = await fetchJson(vpSvc.serviceEndpoint);
+  const jscUrl   = vp?.verifiableCredential?.[0]?.id;
+  if (!jscUrl) throw new Error('Could not extract VTJSC URL from VP');
+  console.log(`✅ Service VTJSC: ${jscUrl}`);
 
   // 5. Issue Service credential from org admin (in-cluster)
   const claims = {
