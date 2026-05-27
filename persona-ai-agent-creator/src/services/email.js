@@ -2,22 +2,30 @@
 const nodemailer = require('nodemailer');
 const logger = require('./logger');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+const smtpHost = isProduction ? process.env.PROD_SMTP_HOST : process.env.LOCAL_SMTP_HOST;
+const smtpPort = isProduction ? process.env.PROD_SMTP_PORT : process.env.LOCAL_SMTP_PORT;
+const smtpSecure = isProduction ? process.env.PROD_SMTP_SECURE : process.env.LOCAL_SMTP_SECURE;
+const smtpUser = isProduction ? process.env.PROD_SMTP_USER : process.env.LOCAL_SMTP_USER;
+const smtpPass = isProduction ? process.env.PROD_SMTP_PASS : process.env.LOCAL_SMTP_PASS;
+
 const isSmtpConfigured = !!(
-  process.env.SMTP_HOST &&
-  process.env.SMTP_USER &&
-  process.env.SMTP_PASS
+  smtpHost &&
+  smtpUser &&
+  smtpPass
 );
 
 let transporter = null;
 
 if (isSmtpConfigured) {
   transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587', 10),
-    secure: process.env.SMTP_SECURE === 'true', // true for 465, false for 587
+    host: smtpHost,
+    port: parseInt(smtpPort || '587', 10),
+    secure: smtpSecure === 'true', // true for 465, false for 587
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+      user: smtpUser,
+      pass: smtpPass,
     },
   });
 }

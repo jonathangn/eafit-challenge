@@ -22,6 +22,9 @@ spec:
         image: persona-creator-image
         ports:
         - containerPort: 3000
+        envFrom:
+        - secretRef:
+            name: persona-creator-secrets
         env:
         - name: DATABASE_PATH
           value: "/app/data/database.sqlite"

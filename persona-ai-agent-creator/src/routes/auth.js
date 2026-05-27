@@ -43,10 +43,16 @@ router.post('/register', async (req, res) => {
 
   const activationUrl = `${req.protocol}://${req.get('host')}/verify-email?token=${verificationToken}`;
 
-  // SMTP not yet activated — show the link directly in the UI.
-  // When SMTP is ready: call sendMail() here and remove the actionLink render.
+  const html = getEmailTemplate(
+    res.locals.t('auth.verifyPendingTitle') || 'Verify Your Email',
+    res.locals.t('auth.verifyPendingSubtitle') || 'We have sent a verification link to your email address.',
+    res.locals.t('auth.verifyAccountBtn') || 'Verify my account',
+    activationUrl,
+    'If the button does not work, copy and paste this link:'
+  );
+  await sendMail({ to: email, subject: res.locals.t('auth.verifyPendingTitle') || 'Verify Your Email', html, text: activationUrl });
   logger.info(`User registered (Verification Pending): ${email}`);
-  res.render('verify-pending', { email, error: null, success: null, actionLink: activationUrl });
+  res.render('verify-pending', { email, error: null, success: null });
 });
 
 router.get('/verify-pending', (req, res) => {
@@ -72,9 +78,16 @@ router.post('/resend-verification', async (req, res) => {
 
   const activationUrl = `${req.protocol}://${req.get('host')}/verify-email?token=${verificationToken}`;
 
-  // SMTP not yet activated — show the link directly in the UI.
+  const html = getEmailTemplate(
+    res.locals.t('auth.verifyPendingTitle') || 'Verify Your Email',
+    res.locals.t('auth.verifyPendingSubtitle') || 'We have sent a verification link to your email address.',
+    res.locals.t('auth.verifyAccountBtn') || 'Verify my account',
+    activationUrl,
+    'If the button does not work, copy and paste this link:'
+  );
+  await sendMail({ to: email, subject: res.locals.t('auth.verifyPendingTitle') || 'Verify Your Email', html, text: activationUrl });
   logger.info(`Verification link regenerated for: ${email}`);
-  res.render('verify-pending', { email, error: null, success: res.locals.t('validation.verificationSent'), actionLink: activationUrl });
+  res.render('verify-pending', { email, error: null, success: res.locals.t('validation.verificationSent') });
 });
 
 router.get('/verify-email', async (req, res) => {
@@ -130,7 +143,6 @@ router.post('/forgot-password', async (req, res) => {
     return res.status(400).render('forgot-password', { error: res.locals.t('validation.invalidEmail'), success: null });
   }
 
-  let actionLink = null;
   const user = db.find('users', u => u.email === email);
   if (user) {
     const resetToken = crypto.randomBytes(32).toString('hex');
@@ -141,18 +153,23 @@ router.post('/forgot-password', async (req, res) => {
       reset_token_expires: resetExpires,
     });
 
-    actionLink = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
+    const resetUrl = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
+    const html = getEmailTemplate(
+      res.locals.t('auth.forgotPasswordTitle') || 'Recover Password',
+      res.locals.t('auth.forgotPasswordSubtitle') || 'You requested a password reset. Click below to choose a new password.',
+      res.locals.t('auth.resetLinkBtn') || 'Reset my password',
+      resetUrl,
+      'If the button does not work, copy and paste this link:'
+    );
+    await sendMail({ to: email, subject: res.locals.t('auth.forgotPasswordTitle') || 'Recover Password', html, text: resetUrl });
 
-    // SMTP not yet activated — show the link directly in the UI.
-    // When SMTP is ready: uncomment the block below and remove actionLink from render.
-    // const html = getEmailTemplate(...); await sendMail({ to: email, ... });
     logger.info(`Password reset link generated for user: ${email}`);
   } else {
     logger.info(`Password reset requested for non-existent email: ${email}`);
   }
 
-  // Anti-enumeration: always show success message, only show link if user exists
-  res.render('forgot-password', { error: null, success: res.locals.t('validation.forgotSent'), actionLink });
+  // Anti-enumeration: always show success message
+  res.render('forgot-password', { error: null, success: res.locals.t('validation.forgotSent') });
 });
 
 router.get('/reset-password/:token', (req, res) => {

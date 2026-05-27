@@ -25,37 +25,16 @@
                 </div>
             <% } %>
 
-            <% if (typeof actionLink !== 'undefined' && actionLink && !(typeof success !== 'undefined' && success)) { %>
-                <div class="bg-primary/10 border border-primary/20 text-primary p-4 rounded-xl text-sm flex flex-col gap-3 items-start text-left">
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined">info</span>
-                        <%= t('auth.verifyLinkReady') %>
-                    </div>
-                    <a href="<%= actionLink %>" class="w-full btn-primary btn-base py-2 text-center font-bold text-on-primary flex items-center justify-center gap-2 mt-1">
-                        <span class="material-symbols-outlined text-[18px]">verified_user</span>
-                        <%= t('auth.verifyAccountBtn') %>
-                    </a>
-                </div>
-            <% } %>
-
             <% if (typeof success !== 'undefined' && success) { %>
                 <div class="bg-primary/10 border border-primary/20 text-primary p-4 rounded-xl text-sm flex flex-col gap-3 items-start text-left">
                     <div class="flex items-center gap-2">
                         <span class="material-symbols-outlined">check_circle</span>
                         <%= success %>
                     </div>
-                    <% if (typeof actionLink !== 'undefined' && actionLink) { %>
-                    <a href="<%= actionLink %>" class="w-full btn-primary btn-base py-2 text-center font-bold text-on-primary flex items-center justify-center gap-2 mt-1">
-                        <span class="material-symbols-outlined text-[18px]">verified_user</span>
-                        <%= t('auth.verifyAccountBtn') %>
-                    </a>
-                    <% } %>
                 </div>
             <% } %>
 
-            <p class="font-body-md text-body-md text-on-surface-variant">
-                <%= t('auth.verifyPendingText') %>
-            </p>
+
 
             <form action="/resend-verification" method="post" class="pt-4 border-t border-outline/10 space-y-4">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
